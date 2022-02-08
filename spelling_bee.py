@@ -1,5 +1,6 @@
 import random
 import os
+import json
 from datetime import date
 from flask import Flask, render_template, request, session
 
@@ -50,6 +51,7 @@ class GameState:
             all_words = [x.strip() for x in f]
         word_list = tuple([x for x in all_words if pangram_set.union(set(x)) == pangram_set and required_letter in x])
 
+        pangram_set.remove(required_letter)
         return GameState(pangram_set, required_letter, word_list)
 
     def score_word(self, word: str) -> int:
@@ -88,3 +90,26 @@ def index():
         game_state = GameState.make_new_game()
 
     return render_template('index.html')
+
+@app.route('/api', methods = ['POST'])
+def api():
+    global game_state
+    rj = request.get_json()
+
+    if rj['action'] == 'get_setup':
+        to_return = {
+            'required': game_state.required,
+            'letters': list(game_state.letter_set)
+        }
+
+        if 'score' in session:
+            to_return['score'] = session['score']
+        else:
+            to_return['score'] = 0
+
+        if 'already_guessed' in session:
+            to_return['already_guessed'] = session['alraedy_guessed']
+        else:
+            to_return['already_guessed'] = []
+
+        return json.dumps(to_return), 200, {'ContentType': 'application/json'}
