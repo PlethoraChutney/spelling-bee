@@ -1,4 +1,5 @@
 import random
+import os
 from datetime import date
 
 class GameState:
@@ -16,10 +17,10 @@ class GameState:
         
     @staticmethod
     def make_new_game():
-        with open('pangram_sets.txt', 'r') as f:
+        with open(os.path.join('data', 'pangram_sets.txt'), 'r') as f:
             pangram_sets = [set(x.strip()) for x in f]
 
-        with open('words.txt', 'r') as f:
+        with open(os.path.join('data', 'words.txt'), 'r') as f:
             all_words = [x.strip() for x in f]
         pangram_set = random.choice(pangram_sets)
         required_letter = random.choice(tuple(pangram_set))
