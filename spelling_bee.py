@@ -39,5 +39,5 @@ class GameState:
 
 
 new_game = GameState.make_new_game()
-print(new_game.score_word(new_game.words[0]))
-print(new_game.maximum_score)
+print(new_game.words[0], new_game.score_word(new_game.words[0]))
+print(len(new_game.words), new_game.maximum_score)
