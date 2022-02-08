@@ -12,4 +12,12 @@ data %>%
   geom_jitter(alpha = 0.5) +
   geom_smooth(formula = y~x, method = 'lm', se = FALSE, color = 'black') +
   facet_grid(rows = vars(Metric), cols = vars(difficulty), scales = 'free') +
+  expand_limits(x = 0, y = 0) +
   scale_y_continuous(breaks = seq(0, 16, 2))
+ggsave('threshold_modelling.png', width = 8, height = 6)
+
+models <- data %>% 
+  filter(difficulty == 'total_score') %>% 
+  group_by(Metric) %>% 
+  nest() %>% 
+  mutate(fit = map(data,~ coef(lm(Value ~ diff_level, .x))))
