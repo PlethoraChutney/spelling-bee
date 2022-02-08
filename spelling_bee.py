@@ -1,7 +1,11 @@
 import random
 import os
 from datetime import date
+from flask import Flask, render_template, request, session
 
+# -----------------------------------------------------------
+# game mechanics
+# -----------------------------------------------------------
 class GameState:
     def __init__(self, letter_set: set, required: str, words: tuple):
         self.letter_set = letter_set
@@ -62,8 +66,22 @@ class GameState:
 
         return score
 
-if __name__ == '__main__':
-    new_game = GameState.make_new_game()
-    print(new_game.words[0], new_game.score_word(new_game.words[0]))
-    print(len(new_game.words), new_game.maximum_score)
-    print(new_game.thresholds)
+# -----------------------------------------------------------
+# flask app
+# -----------------------------------------------------------
+app = Flask(__name__)
+try:
+    app.secret_key = os.environ['SECRET_KEY']
+except KeyError:
+    app.logger.warning('$SECRET_KEY not in environment.')
+    app.secret_key = 'BAD_SECRET_KEY_FOR_DEVELOPMENT'
+
+game_state = GameState.make_new_game()
+
+@app.route('/', methods = ['GET'])
+def index():
+    global game_state
+    if game_state.game_age > 0:
+        game_state = GameState.make_new_game()
+
+    return render_template('index.html')
