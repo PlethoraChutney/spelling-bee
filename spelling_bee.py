@@ -1,14 +1,18 @@
 import random
-from datetime import datetime
+from datetime import date
 
 class GameState:
     def __init__(self, letter_set: set, required: str, words: tuple):
         self.letter_set = letter_set
         self.required = required
         self.words = words
-        self.created = datetime.now()
+        self.created = date.today()
 
         self.maximum_score = sum(self.score_word(x) for x in self.words)
+
+    @property
+    def game_age(self) -> int:
+        return (date.today() - self.created).days
         
     @staticmethod
     def make_new_game():
