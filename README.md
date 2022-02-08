@@ -6,7 +6,7 @@ modeled using past puzzles and a simple linear regression
 on total possible score. Total score chosen over number of
 words because it has a slightly tighter correlation.
 
-!(https://github.com/PlethoraChutney/spelling-bee/blob/main/utils/threshold_modelling.png?raw=true)[Score threshold modelling]
+![Score threshold modelling](https://github.com/PlethoraChutney/spelling-bee/blob/main/utils/threshold_modelling.png?raw=true)
 
 
 
