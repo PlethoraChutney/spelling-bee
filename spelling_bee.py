@@ -16,14 +16,22 @@ class GameState:
         return (date.today() - self.created).days
         
     @staticmethod
-    def make_new_game():
-        with open(os.path.join('data', 'pangram_sets.txt'), 'r') as f:
-            pangram_sets = [set(x.strip()) for x in f]
+    def make_new_game(pangram_set = None, required_letter = None):
+        if pangram_set is None:
+            with open(os.path.join('data', 'pangram_sets.txt'), 'r') as f:
+                pangram_sets = [set(x.strip()) for x in f]
+            pangram_set = random.choice(pangram_sets)
+        else:
+            pangram_set = set(pangram_set)
+            assert len(pangram_set) == 7, 'Must pick seven letter pangram set'
+
+        if required_letter is None:
+            required_letter = random.choice(tuple(pangram_set))
+        else:
+            assert required_letter in pangram_set, 'Must pick required letter from pangram set'
 
         with open(os.path.join('data', 'words.txt'), 'r') as f:
             all_words = [x.strip() for x in f]
-        pangram_set = random.choice(pangram_sets)
-        required_letter = random.choice(tuple(pangram_set))
         word_list = tuple([x for x in all_words if pangram_set.union(set(x)) == pangram_set and required_letter in x])
 
         return GameState(pangram_set, required_letter, word_list)
