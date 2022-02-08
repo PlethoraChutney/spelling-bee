@@ -10,10 +10,22 @@ class GameState:
         self.created = date.today()
 
         self.maximum_score = sum(self.score_word(x) for x in self.words)
+        # these linear fits are calculated in threshold_modeler.R
+        # they're not a great fit, but the best we can do for now.
+        self.good_thresh = round(self.maximum_score * 0.02752295 + 3.34411497)
+        self.thresh_jump = round(self.maximum_score * 0.03294177 + 1.49861706)
 
     @property
     def game_age(self) -> int:
         return (date.today() - self.created).days
+
+    @property
+    def thresholds(self) -> tuple:
+        return (
+            self.good_thresh,
+            self.good_thresh + self.thresh_jump,
+            self.good_thresh + 2*self.thresh_jump
+        )
         
     @staticmethod
     def make_new_game(pangram_set = None, required_letter = None):
@@ -50,7 +62,8 @@ class GameState:
 
         return score
 
-
-new_game = GameState.make_new_game()
-print(new_game.words[0], new_game.score_word(new_game.words[0]))
-print(len(new_game.words), new_game.maximum_score)
+if __name__ == '__main__':
+    new_game = GameState.make_new_game()
+    print(new_game.words[0], new_game.score_word(new_game.words[0]))
+    print(len(new_game.words), new_game.maximum_score)
+    print(new_game.thresholds)
