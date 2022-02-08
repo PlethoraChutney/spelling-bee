@@ -1,13 +1,19 @@
-# spelling-bee
+# Lindsey's Spelling Bee
+
+A clone of the NYT Spelling Bee. Words generated from the
+ubuntu American English dictionary. Difficulty thresholds
+modeled using past puzzles and a simple linear regression
+on total possible score. Total score chosen over number of
+words because it has a slightly tighter correlation.
+
+!(utils/threshold_modelling.png)[Score threshold modelling]
+
+
 
 ## Project setup
 ```
 npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
+python -m pip install -r requirements.txt
 ```
 
 ### Compiles and minifies for production
@@ -15,10 +21,12 @@ npm run serve
 npm run build
 ```
 
+### Compiles and minifies for development (devtools enabled)
+```
+npm run dev
+```
+
 ### Lints and fixes files
 ```
 npm run lint
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
