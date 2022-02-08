@@ -69,7 +69,10 @@ class GameState:
 # -----------------------------------------------------------
 # flask app
 # -----------------------------------------------------------
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    static_folder=os.path.join('dist', 'static'),
+    template_folder='dist')
 try:
     app.secret_key = os.environ['SECRET_KEY']
 except KeyError:
