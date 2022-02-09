@@ -1,9 +1,10 @@
 <script>
 import LetterHex from './LetterHex.vue'
+import WordHolder from './WordHolder.vue'
 
 export default {
     name: 'SpellingBee',
-    components: {LetterHex},
+    components: {LetterHex, WordHolder},
     data() {
         return {
             'currentWord': []
@@ -13,14 +14,26 @@ export default {
         'letters': Array,
         'required': String
     },
+    emits: ['shuffle-letters'],
     methods: {
         typeLetter(letter) {
             if (letter.length === 1 && letter.match(/[a-z]/i)) {
-                this.currentWord.push(letter.toLocaleUpperCase());
+                let hive = 'out';
+                if (letter === this.required) {
+                    hive = 'queen';
+                } else if (this.letters.includes(letter)) {
+                    hive = 'drone';
+                }
+                this.currentWord.push({
+                    'letter': letter.toLocaleUpperCase(),
+                    'hive': hive
+                });
             } else if (letter.toLocaleUpperCase() === 'ENTER') {
                 console.log('Submit word');
             } else if (letter.toLocaleUpperCase() === 'BACKSPACE') {
                 this.currentWord.pop();
+            } else if (letter.toLocaleUpperCase() === ' ') {
+                this.$emit('shuffle-letters');
             }
         }
     },
@@ -34,6 +47,8 @@ export default {
 
 <template>
     <h1>Lindsey's Spelling Bee</h1>
+    <WordHolder
+    :word="currentWord"/>
     <svg id="letter-swarm" width="300" height="300">
         <LetterHex
         @type-letter="typeLetter($event)"
