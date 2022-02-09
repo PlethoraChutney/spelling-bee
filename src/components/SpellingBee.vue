@@ -13,68 +13,27 @@ export default {
 
 <template>
     <h1>Lindsey's Spelling Bee</h1>
-    <div id="letter-swarm">
+    <svg id="letter-swarm" width="300" height="300">
         <LetterHex
         :key="`required_letter`"
         :letter="required"
-        :position="`position-required`"
+        :radius=0
+        :angle=0
+        :size=50
         :isRequired="true"/>
 
         <LetterHex
         v-for="(letter, index) in letters"
         :key="index"
         :letter="letter"
-        :position="`position-` + String(index)"
+        :radius=97
+        :angle="index"
+        :size=50
         :isRequired="false"/>
-    </div>
+    </svg>
     
 </template>
 
 <style>
-div#letter-swarm {
-    width: 300px;
-    height: 300px;
-    position: relative;
-}
-
-#letter-swarm > svg {
-    position: absolute;
-}
-
-#letter-swarm > .position-required {
-    top: 100px;
-    left: 100px;
-}
-
-#letter-swarm > .position-0 {
-    bottom: 200px;
-    left: 100px;
-}
-
-#letter-swarm > .position-1 {
-    bottom: 150px;
-    left: 13.39px;
-}
-
-#letter-swarm > .position-2 {
-    bottom: 50px;
-    left: 13.39px;
-}
-
-#letter-swarm > .position-3 {
-    bottom: 0px;
-    left: 100px;
-}
-
-#letter-swarm > .position-4 {
-    bottom: 50px;
-    left: 186.6px;
-}
-
-#letter-swarm > .position-5 {
-    bottom: 150px;
-    left: 186.6px;
-}
-
 
 </style>
