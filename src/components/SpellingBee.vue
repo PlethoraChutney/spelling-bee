@@ -4,14 +4,30 @@ import LetterHex from './LetterHex.vue'
 export default {
     name: 'SpellingBee',
     components: {LetterHex},
+    data() {
+        return {
+            'currentWord': []
+        }
+    },
     props: {
         'letters': Array,
         'required': String
     },
     methods: {
         typeLetter(letter) {
-            console.log(letter);
+            if (letter.length === 1 && letter.match(/[a-z]/i)) {
+                this.currentWord.push(letter.toLocaleUpperCase());
+            } else if (letter.toLocaleUpperCase() === 'ENTER') {
+                console.log('Submit word');
+            } else if (letter.toLocaleUpperCase() === 'BACKSPACE') {
+                this.currentWord.pop();
+            }
         }
+    },
+    mounted() {
+        window.addEventListener('keydown', function(e) {
+            this.typeLetter(e.key);
+        }.bind(this));
     }
 }
 </script>

@@ -53,7 +53,7 @@ export default {
 </script>
 
 <template>
-    <g @click="$emit('typeLetter', $event.target.letter)">
+    <g @click="$emit('typeLetter', letter)">
     <polygon
     :points="hexPoints"
     :class="{'required': isRequired}"
