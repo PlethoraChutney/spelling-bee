@@ -14,7 +14,7 @@ export default {
         'letters': Array,
         'required': String
     },
-    emits: ['shuffle-letters'],
+    emits: ['shuffle-letters', 'check-word'],
     methods: {
         typeLetter(letter) {
             if (letter.length === 1 && letter.match(/[a-z]/i)) {
@@ -29,7 +29,7 @@ export default {
                     'hive': hive
                 });
             } else if (letter.toLocaleUpperCase() === 'ENTER') {
-                console.log('Submit word');
+                this.$emit('check-word', this.currentWord);
             } else if (letter.toLocaleUpperCase() === 'BACKSPACE') {
                 this.currentWord.pop();
             } else if (letter.toLocaleUpperCase() === ' ') {

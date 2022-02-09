@@ -55,6 +55,9 @@ class GameState:
         return GameState(pangram_set, required_letter, word_list)
 
     def score_word(self, word: str) -> int:
+        app.logger.debug(word + ' ' + str(len(word)))
+        app.logger.debug('In list: ' + str(word in self.words))
+        app.logger.debug('Required in word: ' + str(self.required in word))
         if word not in self.words or len(word) < 4 or self.required not in word:
             return 0
 
@@ -82,6 +85,7 @@ except KeyError:
     app.secret_key = 'BAD_SECRET_KEY_FOR_DEVELOPMENT'
 
 game_state = GameState.make_new_game()
+app.logger.debug(game_state.words)
 
 @app.route('/', methods = ['GET'])
 def index():
@@ -105,11 +109,26 @@ def api():
         if 'score' in session:
             to_return['score'] = session['score']
         else:
+            session['score'] = 0
             to_return['score'] = 0
 
         if 'already_guessed' in session:
-            to_return['already_guessed'] = session['alraedy_guessed']
+            to_return['already_guessed'] = session['already_guessed']
         else:
+            session['already_guessed'] = []
             to_return['already_guessed'] = []
 
         return json.dumps(to_return), 200, {'ContentType': 'application/json'}
+
+    if rj['action'] == 'check_word':
+        score = game_state.score_word(rj['word'].lower())
+        if score != 0:
+            temp = session['score']
+            temp += score
+            session['score'] = temp
+
+            temp = session['already_guessed']
+            temp.append(rj['word'].lower())
+            session['already_guessed'] = temp
+
+        return json.dumps({'score': score}), 200, {'ContentType': 'application/json'}

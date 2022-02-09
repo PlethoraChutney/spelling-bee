@@ -2,7 +2,8 @@
   <SpellingBee
   :letters="letters"
   :required="required"
-  @shuffle-letters="shuffleLetters()"/>
+  @shuffle-letters="shuffleLetters()"
+  @check-word="checkWord($event)"/>
 </template>
 
 <script>
@@ -49,7 +50,9 @@ export default {
   data() {
     return {
       'letters': ['','','','','',''],
-      'required': ''
+      'required': '',
+      'score': 0,
+      'previousWords': []
     }
   },
   created() {
@@ -59,13 +62,61 @@ export default {
       .then(request => request.json()
         .then(data => {
           this.letters = data.letters;
-          this.required = data.required
+          this.required = data.required;
+          this.score = data.score;
+          this.previousWords = data.already_guessed;
         })
       )
   },
   methods: {
+    showMessage(message) {
+      console.log(message);
+    },
     shuffleLetters() {
       this.letters = shuffle(this.letters);
+    },
+    checkWord(wordArray) {
+      let word = [];
+      wordArray.forEach(e => {
+        word.push(e['letter'])
+      });
+
+      let allowedLetters = []
+      word.forEach(letter => {
+        letter = letter.toLocaleLowerCase()
+        allowedLetters.push(this.letters.includes(letter) || this.required === letter)
+      })
+      if (!allowedLetters.every(e => e === true)) {
+        this.showMessage('Forbidden letters');
+        return false;
+      }
+
+      word = word.join('').toLocaleLowerCase();
+
+      if (this.previousWords.includes(word)) {
+        this.showMessage(`Already guessed ${word}`);
+        return false;
+      } else if (word.length < 4) {
+        this.showMessage('Too short')
+        return false;
+      } else if (!word.includes(this.required)) {
+        this.showMessage(`Missing "${this.required.toLocaleUpperCase()}"`);
+        return false;
+      }
+
+      sendRequest({
+        'action': 'check_word',
+        'word': word
+        }).then(request => request.json()
+        .then(data => {
+          if (data.score === 0) {
+            this.showMessage('Not a word.');
+          } else {
+            this.score += data.score;
+            this.previousWords.push(word);
+            this.previousWords.sort();
+          }
+        }))
     }
   }
 }
