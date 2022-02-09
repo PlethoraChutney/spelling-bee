@@ -69,9 +69,39 @@ export default {
         :size=50
         :isRequired="false"/>
     </svg>
+    <div id="button-container">
+        <div
+        class="button"
+        @click="typeLetter('BACKSPACE')"
+        >Delete</div>
+        <div
+        class="button"
+        @click="typeLetter(' ')"
+        >Shuffle</div>
+        <div
+        class="button"
+        @click="typeLetter('ENTER')"
+        >Enter</div>
+    </div>
     
 </template>
 
 <style>
-
+.button {
+    border: 1px solid #f1f1f1;
+    border-radius: 20px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+}
+#button-container {
+    margin-top: 25px;
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+    margin-left: -7px;
+}
 </style>
