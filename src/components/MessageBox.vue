@@ -19,8 +19,11 @@ div {
     opacity: 0;
     padding: 20px;
     border-radius: 20px;
-    position: absolute;
-    top: 80px;
+    min-height: 1.5rem;
+    width: max-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .has-message {

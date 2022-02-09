@@ -1,6 +1,7 @@
 <template>
-  <h1>Lindsey's Spelling Bee</h1>
+  <h1 id="title">Lindsey's Spelling Bee</h1>
   <SpellingBee
+  id="spelling-bee"
   :letters="letters"
   :message="message"
   :required="required"
@@ -152,9 +153,22 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2f2f2f;
+  display: grid;
+  grid-template-rows: 75px 1fr;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "title title" "game score";
+}
+
+#title {
+  grid-area: title;
+}
+
+#spelling-bee {
+  grid-area: game;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
 }
+
 </style>
