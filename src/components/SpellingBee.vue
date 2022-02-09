@@ -7,6 +7,11 @@ export default {
     props: {
         'letters': Array,
         'required': String
+    },
+    methods: {
+        typeLetter(letter) {
+            console.log(letter);
+        }
     }
 }
 </script>
@@ -15,6 +20,7 @@ export default {
     <h1>Lindsey's Spelling Bee</h1>
     <svg id="letter-swarm" width="300" height="300">
         <LetterHex
+        @type-letter="typeLetter($event)"
         :key="`required_letter`"
         :letter="required"
         :radius=0
@@ -23,6 +29,7 @@ export default {
         :isRequired="true"/>
 
         <LetterHex
+        @type-letter="typeLetter($event)"
         v-for="(letter, index) in letters"
         :key="index"
         :letter="letter"
