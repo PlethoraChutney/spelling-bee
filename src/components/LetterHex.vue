@@ -10,7 +10,8 @@ export default {
         'isRequired': Boolean,
         'radius': Number,
         'angle': Number,
-        'size': Number
+        'size': Number,
+        'shuffling': Boolean
     },
     computed: {
         hexPoints: function() {
@@ -61,6 +62,7 @@ export default {
     <text
     :x="textPoints[0] - 7"
     :y="textPoints[1]"
+    :class="{'hide-for-shuffle': shuffling}"
     text-anchor="middle"
     dominant-baseline="middle">{{letter.toLocaleUpperCase()}}</text>
     </g>
@@ -87,5 +89,15 @@ text {
     font-size: 20pt;
     font-weight: bold;
     user-select: none;
+}
+
+text.hide-for-shuffle {
+    animation: shuffle-opacity 800ms;
+}
+
+@keyframes shuffle-opacity {
+    0%   {opactiy: 1}
+    50%  {opacity: 0}
+    100% {opacity: 1}
 }
 </style>

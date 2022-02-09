@@ -26,9 +26,6 @@ div {
 span.out {
     color: lightgrey;
 }
-span.drone {
-    color: black;
-}
 span.queen {
     color: #f7da21;
 }

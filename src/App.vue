@@ -1,7 +1,11 @@
 <template>
+  <h1>Lindsey's Spelling Bee</h1>
   <SpellingBee
   :letters="letters"
+  :message="message"
   :required="required"
+  :shuffling="shuffling"
+  :clearWord="clearWord"
   @shuffle-letters="shuffleLetters()"
   @check-word="checkWord($event)"/>
 </template>
@@ -50,9 +54,12 @@ export default {
   data() {
     return {
       'letters': ['','','','','',''],
+      'shuffling': false,
       'required': '',
       'score': 0,
-      'previousWords': []
+      'previousWords': [],
+      'message': '',
+      'clearWord': false
     }
   },
   created() {
@@ -70,10 +77,25 @@ export default {
   },
   methods: {
     showMessage(message) {
-      console.log(message);
+      this.message = message;
+      window.setTimeout(() => {
+        this.clearWord = true;
+        window.setTimeout(() => {
+          this.clearWord = false;
+        }, 100);
+      }, 1350);
+      window.setTimeout(() => {
+        this.message = '';
+      }, 1500);
     },
     shuffleLetters() {
-      this.letters = shuffle(this.letters);
+      this.shuffling = true;
+      window.setTimeout(() => {
+        this.letters = shuffle(this.letters);
+      }, 400);
+      window.setTimeout(() => {
+        this.shuffling = false;
+      }, 800);
     },
     checkWord(wordArray) {
       let word = [];
@@ -115,6 +137,7 @@ export default {
             this.score += data.score;
             this.previousWords.push(word);
             this.previousWords.sort();
+            this.showMessage(`Nice! +${data.score}`)
           }
         }))
     }
@@ -128,8 +151,7 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: #2f2f2f;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

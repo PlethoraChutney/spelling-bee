@@ -1,10 +1,11 @@
 <script>
 import LetterHex from './LetterHex.vue'
 import WordHolder from './WordHolder.vue'
+import MessageBox from './MessageBox.vue'
 
 export default {
     name: 'SpellingBee',
-    components: {LetterHex, WordHolder},
+    components: {LetterHex, WordHolder, MessageBox},
     data() {
         return {
             'currentWord': []
@@ -12,7 +13,10 @@ export default {
     },
     props: {
         'letters': Array,
-        'required': String
+        'required': String,
+        'shuffling': Boolean,
+        'message': String,
+        'clearWord': Boolean
     },
     emits: ['shuffle-letters', 'check-word'],
     methods: {
@@ -37,6 +41,13 @@ export default {
             }
         }
     },
+    watch: {
+        clearWord(newState) {
+            if (newState) {
+                this.currentWord = [];
+            }
+        }
+    },
     mounted() {
         window.addEventListener('keydown', function(e) {
             this.typeLetter(e.key);
@@ -46,8 +57,9 @@ export default {
 </script>
 
 <template>
-    <h1>Lindsey's Spelling Bee</h1>
+    <MessageBox :message="message"/>
     <WordHolder
+    id="word-holder"
     :word="currentWord"/>
     <svg id="letter-swarm" width="300" height="300">
         <LetterHex
@@ -57,6 +69,7 @@ export default {
         :radius=0
         :angle=0
         :size=50
+        :shuffling="false"
         :isRequired="true"/>
 
         <LetterHex
@@ -67,6 +80,7 @@ export default {
         :radius=97
         :angle="index"
         :size=50
+        :shuffling="shuffling"
         :isRequired="false"/>
     </svg>
     <div id="button-container">
@@ -87,6 +101,9 @@ export default {
 </template>
 
 <style>
+#word-holder {
+    margin-top: 60px;
+}
 .button {
     border: 1px solid #f1f1f1;
     border-radius: 20px;
