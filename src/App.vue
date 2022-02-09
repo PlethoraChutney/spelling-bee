@@ -9,10 +9,14 @@
   :clearWord="clearWord"
   @shuffle-letters="shuffleLetters()"
   @check-word="checkWord($event)"/>
+  <WordList
+  :wordList="previousWords"
+  />
 </template>
 
 <script>
 import SpellingBee from './components/SpellingBee.vue'
+import WordList from './components/WordList.vue'
 
 function sendRequest(body) {
     return fetch('/api', {
@@ -50,7 +54,8 @@ function shuffle(array) {
 export default {
   name: 'App',
   components: {
-    SpellingBee
+    SpellingBee,
+    WordList
   },
   data() {
     return {
@@ -84,7 +89,7 @@ export default {
         window.setTimeout(() => {
           this.clearWord = false;
         }, 100);
-      }, 1350);
+      }, 500);
       window.setTimeout(() => {
         this.message = '';
       }, 1500);
@@ -137,7 +142,6 @@ export default {
           } else {
             this.score += data.score;
             this.previousWords.push(word);
-            this.previousWords.sort();
             this.showMessage(`Nice! +${data.score}`)
           }
         }))

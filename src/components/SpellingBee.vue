@@ -50,6 +50,9 @@ export default {
     },
     mounted() {
         window.addEventListener('keydown', function(e) {
+            if (e.key.toLocaleUpperCase() === 'BACKSPACE') {
+                e.preventDefault();
+            }
             this.typeLetter(e.key);
         }.bind(this));
     }
