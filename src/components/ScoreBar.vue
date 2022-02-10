@@ -90,6 +90,12 @@ export default {
     align-items: center;
 }
 
+@media screen and (max-width: 650px) {
+  #score-bar {
+    flex-direction: column;
+  }
+}
+
 p {
     width: max-content;
     height: 50px;

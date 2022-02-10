@@ -172,6 +172,9 @@ export default {
 
 body {
   overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 #app {
@@ -187,6 +190,7 @@ body {
   grid-template-areas: "title title" "game score";
   height: 100vh;
   padding: 0;
+  max-width: 1200px;
 }
 
 @media screen and (max-width: 650px) {
