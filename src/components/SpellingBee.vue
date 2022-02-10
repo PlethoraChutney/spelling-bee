@@ -60,46 +60,44 @@ export default {
 </script>
 
 <template>
-    <div id="game-side">
-        <MessageBox :message="message"/>
-        <WordHolder
-        id="word-holder"
-        :word="currentWord"/>
-        <svg id="letter-swarm" width="300" height="300">
-            <LetterHex
-            @type-letter="typeLetter($event)"
-            :key="`required_letter`"
-            :letter="required"
-            :radius=0
-            :angle=0
-            :size=50
-            :shuffling="false"
-            :isRequired="true"/>
-            <LetterHex
-            @type-letter="typeLetter($event)"
-            v-for="(letter, index) in letters"
-            :key="index"
-            :letter="letter"
-            :radius=97
-            :angle="index"
-            :size=50
-            :shuffling="shuffling"
-            :isRequired="false"/>
-        </svg>
-        <div id="button-container">
-            <div
-            class="button"
-            @click="typeLetter('BACKSPACE')"
-            >Delete</div>
-            <div
-            class="button"
-            @click="typeLetter(' ')"
-            >Shuffle</div>
-            <div
-            class="button"
-            @click="typeLetter('ENTER')"
-            >Enter</div>
-        </div>
+    <MessageBox :message="message"/>
+    <WordHolder
+    id="word-holder"
+    :word="currentWord"/>
+    <svg id="letter-swarm" width="300" height="300">
+        <LetterHex
+        @type-letter="typeLetter($event)"
+        :key="`required_letter`"
+        :letter="required"
+        :radius=0
+        :angle=0
+        :size=50
+        :shuffling="false"
+        :isRequired="true"/>
+        <LetterHex
+        @type-letter="typeLetter($event)"
+        v-for="(letter, index) in letters"
+        :key="index"
+        :letter="letter"
+        :radius=97
+        :angle="index"
+        :size=50
+        :shuffling="shuffling"
+        :isRequired="false"/>
+    </svg>
+    <div id="button-container">
+        <div
+        class="button"
+        @click="typeLetter('BACKSPACE')"
+        >Delete</div>
+        <div
+        class="button"
+        @click="typeLetter(' ')"
+        >Shuffle</div>
+        <div
+        class="button"
+        @click="typeLetter('ENTER')"
+        >Enter</div>
     </div>
     
 </template>

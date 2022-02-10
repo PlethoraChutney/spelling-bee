@@ -1,17 +1,20 @@
 <template>
   <h1 id="title">Lindsey's Spelling Bee</h1>
-  <SpellingBee
-  id="spelling-bee"
-  :letters="letters"
-  :message="message"
-  :required="required"
-  :shuffling="shuffling"
-  :clearWord="clearWord"
-  @shuffle-letters="shuffleLetters()"
-  @check-word="checkWord($event)"/>
-  <WordList
-  :wordList="previousWords"
-  />
+  <div id="game-side" class="v-center">
+    <SpellingBee
+    :letters="letters"
+    :message="message"
+    :required="required"
+    :shuffling="shuffling"
+    :clearWord="clearWord"
+    @shuffle-letters="shuffleLetters()"
+    @check-word="checkWord($event)"/>
+  </div>
+  <div id="score-side" class="v-center">
+    <WordList
+    :wordList="previousWords"
+    />
+  </div>
 </template>
 
 <script>
@@ -161,17 +164,29 @@ export default {
   grid-template-rows: 75px 1fr;
   grid-template-columns: 1fr 1fr;
   grid-template-areas: "title title" "game score";
+  height: 100vh;
+  padding: 0;
 }
 
 #title {
   grid-area: title;
+  border-bottom: 3px solid #2f2f2f;
+  padding-bottom: 20px;
+  margin-bottom: 0;
 }
 
-#spelling-bee {
+#game-side {
   grid-area: game;
+}
+
+#score-side {
+  grid-area: score;
+}
+
+.v-center {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
 }
 

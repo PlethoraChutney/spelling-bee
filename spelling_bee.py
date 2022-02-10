@@ -15,22 +15,22 @@ class GameState:
         self.created = date.today()
 
         self.maximum_score = sum(self.score_word(x) for x in self.words)
-        # these linear fits are calculated in threshold_modeler.R
-        # they're not a great fit, but the best we can do for now.
-        self.good_thresh = round(self.maximum_score * 0.02752295 + 3.34411497)
-        self.thresh_jump = round(self.maximum_score * 0.03294177 + 1.49861706)
+        self.thresholds = {
+            'Beginner': 0,
+            'Good Start': round(0.02 * self.maximum_score),
+            'Moving Up': round(0.05 * self.maximum_score),
+            'Good': round(0.08 * self.maximum_score),
+            'Solid': round(0.15 * self.maximum_score),
+            'Nice': round(0.25 * self.maximum_score),
+            'Great': round(0.40 * self.maximum_score),
+            'Amazing': round(0.50 * self.maximum_score),
+            'Genius': round(0.70 * self.maximum_score),
+            'Queen Bee': self.maximum_score
+        }
 
     @property
     def game_age(self) -> int:
         return (date.today() - self.created).days
-
-    @property
-    def thresholds(self) -> tuple:
-        return (
-            self.good_thresh,
-            self.good_thresh + self.thresh_jump,
-            self.good_thresh + 2*self.thresh_jump
-        )
         
     @staticmethod
     def make_new_game(pangram_set = None, required_letter = None):
@@ -103,8 +103,14 @@ def api():
     if rj['action'] == 'get_setup':
         to_return = {
             'required': game_state.required,
-            'letters': list(game_state.letter_set)
+            'letters': list(game_state.letter_set),
+            'thresholds': game_state.thresholds
         }
+
+        if session.get('letters') != list(game_state.letter_set):
+            session['letters'] = list(game_state.letter_set)
+            session['score'] = 0
+            session['already_guessed'] = []
 
         if 'score' in session:
             to_return['score'] = session['score']

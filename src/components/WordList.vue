@@ -18,11 +18,10 @@ export default {
             return titleWords;
         },
         thirdSplit() {
-            let thirdsIndex = Math.floor(this.wordList.length / 3)
             return [
-                this.titleCaseWordList.slice(0, thirdsIndex),
-                this.titleCaseWordList.slice(thirdsIndex, thirdsIndex*2),
-                this.titleCaseWordList.slice(thirdsIndex*2)
+                this.titleCaseWordList.slice(0, 20),
+                this.titleCaseWordList.slice(20, 40),
+                this.titleCaseWordList.slice(40)
             ];
         }
     }
@@ -59,21 +58,29 @@ export default {
 #word-columns {
     overflow-y: scroll;
     scrollbar-width: none;
-    max-height: 500px;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: center;
     margin-top: 20px;
     text-align: left;
+    border: 3px solid #dddddd;
+    border-radius: 5px;
+    width: 100%;
+    height: 50vh;
 }
 .column {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
+    width: 25%;
+    margin-left: 2.5%;
+    margin-right: 2.5%;
 }
 p {
-    margin-top: 0;
-    margin-bottom: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    width: 100%;
+    border-bottom: 1px solid #dddddd;
 }
 
 </style>
