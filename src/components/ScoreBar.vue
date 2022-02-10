@@ -1,5 +1,8 @@
 <script>
+import ScoreNode from './ScoreNode.vue'
+
 export default {
+    components: {ScoreNode},
     props: {
         'score': Number,
         'thresholds': Array,
@@ -21,10 +24,10 @@ export default {
             return currentThreshold;
         },
         scoreSvgPaths() {
-            let currentPercentScore = this.score/this.scoreLevels[this.scoreLevels.length - 1] * 300;
+            let currentPercentScore = this.score/this.scoreLevels[this.scoreLevels.length - 1] * 350 + 15;
             return [
-                `M 0 25 l ${currentPercentScore} 0`,
-                `M ${currentPercentScore} 25 l 300 0`
+                `M 15 25 l ${currentPercentScore} 0`,
+                `M ${currentPercentScore} 25 L 365 25`
             ]
         }
     }
@@ -35,7 +38,7 @@ export default {
     <div id="score-bar">
         <p>{{currentScoreLevel}}</p>
         <svg
-        width="300"
+        width="380"
         height="50"
         >
             <path class="current-score" fill="transparent"
@@ -43,6 +46,14 @@ export default {
             />
             <path class="remaining-score" fill="transparent"
             :d="scoreSvgPaths[1]"
+            />
+            <ScoreNode
+            v-for="(scoreLevel, index) in scoreLevels"
+            :key="index"
+            :xPosition="scoreLevel/scoreLevels[scoreLevels.length -1] * 350 + 15"
+            :nodeThreshold="scoreLevel"
+            :currentScore="score"
+            :isActive="currentScoreLevel === thresholds[index]"
             />
         </svg>
     </div>
