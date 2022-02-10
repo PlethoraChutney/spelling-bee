@@ -29,6 +29,20 @@ export default {
                 `M 15 25 l ${currentPercentScore} 0`,
                 `M ${currentPercentScore} 25 L 365 25`
             ]
+        },
+        currentNonCurrentSplit() {
+            // Need this becasue SVG z-indexing is purely determined by when an element is built
+            var nonCurrentScoreLevels = [];
+            var currentScoreLevel = [];
+            this.thresholds.forEach((threshold, index) => {
+                if (threshold !== this.currentScoreLevel) {
+                    nonCurrentScoreLevels.push([this.scoreLevels[index], threshold]);
+                } else {
+                    currentScoreLevel.push([this.scoreLevels[index], threshold]);
+                }
+            })
+
+            return {'nonCurrent': nonCurrentScoreLevels, 'current': currentScoreLevel};
         }
     }
 }
@@ -36,7 +50,7 @@ export default {
 
 <template>
     <div id="score-bar">
-        <p>{{currentScoreLevel}}</p>
+        <p class="v-center">{{currentScoreLevel}}</p>
         <svg
         width="380"
         height="50"
@@ -48,12 +62,20 @@ export default {
             :d="scoreSvgPaths[1]"
             />
             <ScoreNode
-            v-for="(scoreLevel, index) in scoreLevels"
+            v-for="(scoreLevel, index) in currentNonCurrentSplit.nonCurrent"
             :key="index"
-            :xPosition="scoreLevel/scoreLevels[scoreLevels.length -1] * 350 + 15"
-            :nodeThreshold="scoreLevel"
+            :xPosition="scoreLevel[0]/scoreLevels[scoreLevels.length -1] * 350 + 15"
+            :nodeThreshold="scoreLevel[0]"
             :currentScore="score"
-            :isActive="currentScoreLevel === thresholds[index]"
+            :isActive="currentScoreLevel === scoreLevel[1]"
+            />
+            <ScoreNode
+            v-for="(scoreLevel, index) in currentNonCurrentSplit.current"
+            :key="index"
+            :xPosition="scoreLevel[0]/scoreLevels[scoreLevels.length -1] * 350 + 15"
+            :nodeThreshold="scoreLevel[0]"
+            :currentScore="score"
+            :isActive="currentScoreLevel === scoreLevel[1]"
             />
         </svg>
     </div>
@@ -65,11 +87,14 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    align-items: center;
 }
 
 p {
     width: max-content;
     height: 50px;
+    font-weight: bold;
+    margin: 0;
 }
 
 path {

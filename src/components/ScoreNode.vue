@@ -21,7 +21,7 @@ export default {
     v-else
     :cx="xPosition"
     cy="25"
-    class="current-node"
+    class="current-node completed"
     r="10"
     />
 </template>
@@ -31,7 +31,11 @@ circle {
     fill: #e6e6e6;
 }
 
-circle.completed, circle.current-node {
+circle.completed {
     fill: #f7da21;
+}
+
+circle.current-node {
+    z-index: 1;
 }
 </style>
