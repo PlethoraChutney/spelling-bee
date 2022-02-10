@@ -22,12 +22,12 @@ export default {
     :cx="xPosition"
     cy="25"
     class="current-node completed"
-    r="10"
+    r="15"
     />
     <text
     v-if="isActive"
-    :cx="xPosition"
-    cy="25"
+    :x="xPosition"
+    y="26"
     text-anchor="middle"
     dominant-baseline="middle"
     >{{currentScore}}</text>
@@ -44,5 +44,9 @@ circle.completed {
 
 circle.current-node {
     z-index: 1;
+}
+
+text {
+    font-size: 10pt;
 }
 </style>

@@ -1,7 +1,8 @@
 <script>
 export default {
     props: {
-        'wordList': Array
+        'wordList': Array,
+        'numWords': Number
     },
     computed: {
         titleCaseWordList() {
@@ -18,10 +19,11 @@ export default {
             return titleWords;
         },
         thirdSplit() {
+            let split = Math.round(this.numWords/3) + 1;
             return [
-                this.titleCaseWordList.slice(0, 20),
-                this.titleCaseWordList.slice(20, 40),
-                this.titleCaseWordList.slice(40)
+                this.titleCaseWordList.slice(0, split),
+                this.titleCaseWordList.slice(split, split*2),
+                this.titleCaseWordList.slice(split*2)
             ];
         }
     }

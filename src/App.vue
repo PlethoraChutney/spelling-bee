@@ -18,6 +18,7 @@
     />
     <WordList
     :wordList="previousWords"
+    :numWords="numWords"
     />
   </div>
 </template>
@@ -72,6 +73,7 @@ export default {
       'letters': ['','','','','',''],
       'thresholds': ['Beginner'],
       'scoreLevels': [0],
+      'numWords': 1,
       'shuffling': false,
       'required': '',
       'score': 0,
@@ -89,6 +91,7 @@ export default {
           this.letters = data.letters;
           this.thresholds = data.thresholds;
           this.scoreLevels = data.score_levels;
+          this.numWords = data.num_words;
           this.required = data.required;
           this.score = data.score;
           this.previousWords = data.already_guessed;
