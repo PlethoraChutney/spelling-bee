@@ -11,6 +11,11 @@
     @check-word="checkWord($event)"/>
   </div>
   <div id="score-side" class="v-center">
+    <ScoreBar
+    :score="score"
+    :thresholds="thresholds"
+    :scoreLevels="scoreLevels"
+    />
     <WordList
     :wordList="previousWords"
     />
@@ -20,6 +25,7 @@
 <script>
 import SpellingBee from './components/SpellingBee.vue'
 import WordList from './components/WordList.vue'
+import ScoreBar from './components/ScoreBar.vue'
 
 function sendRequest(body) {
     return fetch('/api', {
@@ -58,11 +64,14 @@ export default {
   name: 'App',
   components: {
     SpellingBee,
-    WordList
+    WordList,
+    ScoreBar
   },
   data() {
     return {
       'letters': ['','','','','',''],
+      'thresholds': ['Beginner'],
+      'scoreLevels': [0],
       'shuffling': false,
       'required': '',
       'score': 0,
@@ -78,6 +87,8 @@ export default {
       .then(request => request.json()
         .then(data => {
           this.letters = data.letters;
+          this.thresholds = data.thresholds;
+          this.scoreLevels = data.score_levels;
           this.required = data.required;
           this.score = data.score;
           this.previousWords = data.already_guessed;

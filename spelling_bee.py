@@ -104,7 +104,8 @@ def api():
         to_return = {
             'required': game_state.required,
             'letters': list(game_state.letter_set),
-            'thresholds': game_state.thresholds
+            'thresholds': list(game_state.thresholds.keys()),
+            'score_levels': list(game_state.thresholds.values())
         }
 
         if session.get('letters') != list(game_state.letter_set):
