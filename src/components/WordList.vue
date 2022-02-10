@@ -68,7 +68,8 @@ export default {
     border: 3px solid #dddddd;
     border-radius: 5px;
     width: 100%;
-    height: 50vh;
+    min-height: 50vh;
+    max-height: 70vh;
 }
 .column {
     display: flex;

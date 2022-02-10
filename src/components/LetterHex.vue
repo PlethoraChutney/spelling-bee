@@ -61,7 +61,7 @@ export default {
     />
     <text
     :x="textPoints[0] - 7"
-    :y="textPoints[1]"
+    :y="textPoints[1] + 5"
     :class="{'hide-for-shuffle': shuffling}"
     text-anchor="middle"
     dominant-baseline="middle">{{letter.toLocaleUpperCase()}}</text>
@@ -86,7 +86,8 @@ g:hover {
 }
 
 text {
-    font-size: 20pt;
+    font-family: Lato, sans-serif;
+    font-size: 24pt;
     font-weight: bold;
     user-select: none;
 }

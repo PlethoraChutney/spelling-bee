@@ -168,8 +168,15 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;900&display=swap');
+
+body {
+  overflow: hidden;
+}
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Lato, Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -187,6 +194,16 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+  }
+
+  body {
+    overflow-y: scroll;
+    scrollbar-width: none;
+  }
+
+  h1 {
+    display: none;
+    visibility: hidden;
   }
 }
 
