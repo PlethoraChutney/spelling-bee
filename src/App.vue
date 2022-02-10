@@ -182,6 +182,14 @@ export default {
   padding: 0;
 }
 
+@media screen and (max-width: 650px) {
+  #app {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+}
+
 #title {
   grid-area: title;
   border-bottom: 3px solid #2f2f2f;
