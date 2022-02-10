@@ -24,6 +24,13 @@ export default {
     class="current-node completed"
     r="10"
     />
+    <text
+    v-if="isActive"
+    :cx="xPosition"
+    cy="25"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    >{{currentScore}}</text>
 </template>
 
 <style scoped>
