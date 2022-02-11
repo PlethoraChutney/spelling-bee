@@ -220,6 +220,14 @@ body {
   padding: 0 20px;
 }
 
+
+#title {
+  grid-area: title;
+  border-bottom: 3px solid #2f2f2f;
+  padding-bottom: 20px;
+  margin-bottom: 0;
+}
+
 @media screen and (max-width: 650px) {
   #app {
     display: flex;
@@ -231,13 +239,20 @@ body {
     overflow-y: scroll;
     scrollbar-width: none;
   }
-}
 
-#title {
-  grid-area: title;
-  border-bottom: 3px solid #2f2f2f;
-  padding-bottom: 20px;
-  margin-bottom: 0;
+  #title {
+    min-height: 75px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding-bottom: 0;
+  }
+
+  #title > h1 {
+    font-size: 16pt;
+    max-width: 150px;
+  }
 }
 
 #yesterday-modal {
