@@ -83,8 +83,6 @@ export default {
     }
   },
   created() {
-    document.title = 'Spelling Bee';
-
     sendRequest({'action': 'get_setup'})
       .then(request => request.json()
         .then(data => {

@@ -1,18 +1,23 @@
 import random
 import os
 import json
-from datetime import date
+from datetime import date, datetime, timedelta
 from flask import Flask, render_template, request, session
 
 # -----------------------------------------------------------
 # game mechanics
 # -----------------------------------------------------------
 class GameState:
-    def __init__(self, letter_set: set, required: str, words: tuple):
+    def __init__(
+        self, letter_set: set, required: str,
+        words: tuple, date_created:date = date.today(),
+        yesterday_words:list = [None],
+        ):
         self.letter_set = letter_set
         self.required = required
         self.words = words
-        self.created = date.today()
+        self.created = date_created
+        self.yesterday_words = yesterday_words
 
         self.maximum_score = sum(self.score_word(x) for x in self.words)
         self.thresholds = {
@@ -33,26 +38,67 @@ class GameState:
         return (date.today() - self.created).days
         
     @staticmethod
-    def make_new_game(pangram_set = None, required_letter = None):
-        if pangram_set is None:
+    def make_new_game(json_file = None):
+        if json_file is None:
             with open(os.path.join('data', 'pangram_sets.txt'), 'r') as f:
                 pangram_sets = [set(x.strip()) for x in f]
             pangram_set = random.choice(pangram_sets)
-        else:
-            pangram_set = set(pangram_set)
-            assert len(pangram_set) == 7, 'Must pick seven letter pangram set'
-
-        if required_letter is None:
             required_letter = random.choice(tuple(pangram_set))
+
+            with open(os.path.join('data', 'words.txt'), 'r') as f:
+                all_words = [x.strip() for x in f]
+            word_list = tuple([x for x in all_words if pangram_set.union(set(x)) == pangram_set and required_letter in x])
+
+            pangram_set.remove(required_letter)
+            return GameState(pangram_set, required_letter, word_list)
         else:
-            assert required_letter in pangram_set, 'Must pick required letter from pangram set'
+            app.logger.info('Reading from JSON file')
+            with open(json_file, 'r') as f:
+                letter_sets = json.load(f)
 
-        with open(os.path.join('data', 'words.txt'), 'r') as f:
-            all_words = [x.strip() for x in f]
-        word_list = tuple([x for x in all_words if pangram_set.union(set(x)) == pangram_set and required_letter in x])
+            today, yesterday = list(letter_sets.keys())
 
-        pangram_set.remove(required_letter)
-        return GameState(pangram_set, required_letter, word_list)
+            date_created = datetime.strptime(today, '%Y-%m-%d').date()
+
+            letter_set = set(letter_sets[today]['letter_set'])
+            required_letter = letter_sets[today]['required_letter']
+            if 'word_list' in letter_sets[today]:
+                word_list = letter_sets[today]['word_list']
+            else:
+                total_set = letter_set
+                total_set.add(required_letter)
+                with open(os.path.join('data', 'words.txt'), 'r') as f:
+                    word_list = [x.rstrip() for x in f if total_set.union(set(x.rstrip())) == letter_set and required_letter in x.rstrip()]
+
+
+            return GameState(
+                letter_set, required_letter, word_list,
+                date_created = date_created, yesterday_words = letter_sets[yesterday]['words']
+            )
+        
+    def write_to_json(self):
+        yesterday = self.created - timedelta(days = 1)
+        to_write = {
+            str(self.created): {
+                'letter_set': list(self.letter_set),
+                'required_letter': self.required,
+                'word_list': self.words
+            },
+            str(yesterday): {
+                'words': self.yesterday_words
+            }
+        }
+
+        with open('game_state.json', 'w') as f:
+            json.dump(to_write, f)
+
+    def cycle_game(self):
+        new_game = GameState.make_new_game()
+        new_game.yesterday_words = self.words
+
+        new_game.write_to_json()
+        return new_game
+
 
     def score_word(self, word: str) -> int:
         app.logger.debug(word + ' ' + str(len(word)))
@@ -84,14 +130,17 @@ except KeyError:
     app.logger.warning('$SECRET_KEY not in environment.')
     app.secret_key = 'BAD_SECRET_KEY_FOR_DEVELOPMENT'
 
-game_state = GameState.make_new_game()
+try:
+    game_state = GameState.make_new_game('game_state.json')
+except FileNotFoundError:
+    game_state = GameState.make_new_game()
 app.logger.debug(game_state.words)
 
 @app.route('/', methods = ['GET'])
 def index():
     global game_state
     if game_state.game_age > 0:
-        game_state = GameState.make_new_game()
+        game_state = game_state.cycle_game()
 
     return render_template('index.html')
 
