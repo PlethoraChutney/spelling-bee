@@ -71,15 +71,16 @@ export default {
   data() {
     return {
       'letters': ['','','','','',''],
-      'thresholds': ['Beginner'],
-      'scoreLevels': [0],
+      'thresholds': ['Beginner', 'Starting'],
+      'scoreLevels': [0, 10],
       'numWords': 1,
       'shuffling': false,
       'required': '',
       'score': 0,
       'previousWords': [],
       'message': '',
-      'clearWord': false
+      'clearWord': false,
+      'yesterdaysWords': []
     }
   },
   created() {
@@ -93,6 +94,7 @@ export default {
           this.required = data.required;
           this.score = data.score;
           this.previousWords = data.already_guessed;
+          this.yesterdaysWords = data.yesterday_words;
         })
       )
   },

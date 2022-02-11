@@ -155,7 +155,8 @@ def api():
             'letters': list(game_state.letter_set),
             'thresholds': list(game_state.thresholds.keys()),
             'score_levels': list(game_state.thresholds.values()),
-            'num_words': len(game_state.words)
+            'num_words': len(game_state.words),
+            'yesterday_words': game_state.yesterday_words
         }
 
         if session.get('letters') != list(game_state.letter_set):

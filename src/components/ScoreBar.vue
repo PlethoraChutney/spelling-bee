@@ -97,7 +97,8 @@ export default {
 }
 
 p {
-    width: max-content;
+    width: 80px;
+    white-space: pre-wrap;
     height: 50px;
     font-weight: bold;
     margin: 0;
