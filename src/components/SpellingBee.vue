@@ -21,9 +21,6 @@ export default {
     emits: ['shuffle-letters', 'check-word'],
     methods: {
         typeLetter(letter) {
-            if (this.message !== '') {
-                return false;
-            }
             if (letter.length === 1 && letter.match(/[a-z]/i)) {
                 letter = letter.toLocaleLowerCase();
                 let hive = 'out';

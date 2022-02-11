@@ -117,13 +117,12 @@ export default {
       this.showWordModal = !this.showWordModal;
     },
     showMessage(message) {
+      this.message = '';
       this.message = message;
+      this.clearWord = true;
       window.setTimeout(() => {
-        this.clearWord = true;
-        window.setTimeout(() => {
-          this.clearWord = false;
-        }, 100);
-      }, 500);
+        this.clearWord = false;
+      }, 100);
       window.setTimeout(() => {
         this.message = '';
       }, 1500);
@@ -142,6 +141,11 @@ export default {
       wordArray.forEach(e => {
         word.push(e['letter'])
       });
+
+      if (word.join('').toLocaleUpperCase() === 'TACOBELL') {
+        this.showMessage(';)');
+        return false;
+      }
 
       let allowedLetters = []
       word.forEach(letter => {
@@ -176,6 +180,9 @@ export default {
           } else {
             this.score += data.score;
             this.previousWords.push(word);
+            if (data.score === word.length + 7) {
+              this.showMessage(`Pangram! +${data.score - 7} +7`)
+            }
             this.showMessage(`Nice! +${data.score}`)
           }
         }))
