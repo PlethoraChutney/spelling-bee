@@ -1,5 +1,8 @@
 <template>
-  <h1 id="title">Lindsey's Spelling Bee</h1>
+  <div id="title">
+    <h1>Lindsey's Spelling Bee</h1>
+    <div id="yesterday-modal" class="button" @click="toggleYesterdayWordModal">Yesterday's Words</div>
+  </div>
   <div id="game-side" class="v-center">
     <SpellingBee
     :letters="letters"
@@ -21,12 +24,21 @@
     :numWords="numWords"
     />
   </div>
+  <ModalWindow v-if="showWordModal"
+  @toggleVisible="toggleYesterdayWordModal">
+    <h1>Yesterday's Words</h1>
+    <WordList
+    :wordList="yesterdaysWords"
+    :numWords="yesterdaysWords.length"
+    />
+  </ModalWindow>
 </template>
 
 <script>
 import SpellingBee from './components/SpellingBee.vue'
 import WordList from './components/WordList.vue'
 import ScoreBar from './components/ScoreBar.vue'
+import ModalWindow from './components/ModalWindow.vue'
 
 function sendRequest(body) {
     return fetch('/api', {
@@ -66,10 +78,12 @@ export default {
   components: {
     SpellingBee,
     WordList,
-    ScoreBar
+    ScoreBar,
+    ModalWindow
   },
   data() {
     return {
+      'showWordModal': false,
       'letters': ['','','','','',''],
       'thresholds': ['Beginner', 'Starting'],
       'scoreLevels': [0, 10],
@@ -99,6 +113,9 @@ export default {
       )
   },
   methods: {
+    toggleYesterdayWordModal() {
+      this.showWordModal = !this.showWordModal;
+    },
     showMessage(message) {
       this.message = message;
       window.setTimeout(() => {
@@ -175,6 +192,7 @@ body {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  margin: 0;
 }
 
 #app {
@@ -189,8 +207,10 @@ body {
   grid-template-columns: 1fr 1fr;
   grid-template-areas: "title title" "game score";
   height: 100vh;
+  width: 100vw;
   padding: 0;
   max-width: 1200px;
+  padding: 0 20px;
 }
 
 @media screen and (max-width: 650px) {
@@ -204,11 +224,6 @@ body {
     overflow-y: scroll;
     scrollbar-width: none;
   }
-
-  h1 {
-    display: none;
-    visibility: hidden;
-  }
 }
 
 #title {
@@ -216,6 +231,12 @@ body {
   border-bottom: 3px solid #2f2f2f;
   padding-bottom: 20px;
   margin-bottom: 0;
+}
+
+#yesterday-modal {
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 
 #game-side {

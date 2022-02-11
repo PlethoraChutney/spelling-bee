@@ -25,6 +25,7 @@ export default {
                 return false;
             }
             if (letter.length === 1 && letter.match(/[a-z]/i)) {
+                letter = letter.toLocaleLowerCase();
                 let hive = 'out';
                 if (letter === this.required) {
                     hive = 'queen';

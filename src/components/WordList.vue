@@ -68,7 +68,7 @@ export default {
     border: 3px solid #dddddd;
     border-radius: 5px;
     width: 100%;
-    max-width: 95vw;
+    max-width: 90%;
     min-height: 50vh;
     max-height: 70vh;
 }
