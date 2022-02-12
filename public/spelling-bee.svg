@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="512"
+   height="512"
+   viewBox="0 0 135.46666 135.46667"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   sodipodi:docname="spelling-bee.svg"
+   inkscape:export-filename="C:\Users\rich\bee.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:document-units="mm"
+     showgrid="false"
+     units="px"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:zoom="1"
+     inkscape:cx="223.5"
+     inkscape:cy="376"
+     inkscape:window-width="1920"
+     inkscape:window-height="1018"
+     inkscape:window-x="-6"
+     inkscape:window-y="-6"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:57.2865px;line-height:1.25;font-family:Lato;-inkscape-font-specification:'Lato Heavy';letter-spacing:0px;word-spacing:0px;stroke-width:0.79375;stroke-miterlimit:4;stroke-dasharray:none;stroke:#000000;stroke-opacity:1"
+       x="-59.235806"
+       y="84.973343"
+       id="text4302"
+       transform="matrix(0,-0.88677121,1.1276866,0,0,0)"><tspan
+         sodipodi:role="line"
+         id="tspan4300"
+         style="font-style:normal;font-variant:normal;font-weight:900;font-stretch:normal;font-size:57.2865px;font-family:Lato;-inkscape-font-specification:'Lato Heavy';fill:#ffffff;fill-opacity:1;stroke-width:0.79375;stroke-miterlimit:4;stroke-dasharray:none;stroke:#000000;stroke-opacity:1"
+         x="-59.235806"
+         y="84.973343">B</tspan></text>
+    <path
+       style="fill:#121212;fill-opacity:1;stroke:#ffffff;stroke-width:0.79375;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="M 27.269619,68.196576 V 79.113599 L 3.9390771,73.181797 Z"
+       id="path2252"
+       sodipodi:nodetypes="cccc" />
+    <path
+       style="fill:none;stroke:#f7da21;stroke-width:52.9167;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 53.004607,73.632714 H 93.699319"
+       id="path859"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#121212;fill-opacity:1;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 71.999552,47.172229 c -6.224993,10.782005 -3.37848,47.066688 0,52.918391 l 12.813226,4.2e-4 c -3.353641,-5.808671 -6.218924,-42.147317 0,-52.91881 z"
+       id="path1361"
+       sodipodi:nodetypes="ccccc" />
+    <circle
+       style="fill:#121212;fill-opacity:1;stroke:none;stroke-width:0.133149;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
+       id="path7820"
+       cx="105.43645"
+       cy="64.558334"
+       r="2.7781248" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1.32292;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 115.12048,89.185315 c -0.0477,-0.03336 -0.65413,-0.331783 -0.65413,-0.331783 -2.11844,-0.383178 -9.02989,-1.474888 -11.2127,-6.237387"
+       id="path9347"
+       sodipodi:nodetypes="ccc" />
+  </g>
+</svg>
