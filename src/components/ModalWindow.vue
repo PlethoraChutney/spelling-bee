@@ -19,13 +19,14 @@ export default {
 div#bounding-box {
     margin: 0;
     padding: 0;
-    height: 100%;
+    height: 100vh;
     width: 100%;
     background-color: #f7da21;
     z-index: 1;
     position: absolute;
     left: 0;
     top: 0;
+    overflow: hidden;
 }
 
 div#modal-window {
