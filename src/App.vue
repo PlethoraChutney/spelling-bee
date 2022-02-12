@@ -13,7 +13,7 @@
     @shuffle-letters="shuffleLetters()"
     @check-word="checkWord($event)"/>
   </div>
-  <div id="score-side" class="v-center">
+  <div id="score-side" class="v-center" :class="{'no-overflow': showWordModal}">
     <ScoreBar
     :score="score"
     :thresholds="thresholds"
@@ -218,6 +218,7 @@ body {
   padding: 0;
   max-width: 1200px;
   padding: 0 20px;
+  overflow-x: hidden;
 }
 
 
@@ -226,6 +227,13 @@ body {
   border-bottom: 3px solid #2f2f2f;
   padding-bottom: 20px;
   margin-bottom: 0;
+}
+
+
+#yesterday-modal {
+  position: fixed;
+  top: 10px;
+  right: 10px;
 }
 
 @media screen and (max-width: 650px) {
@@ -253,12 +261,13 @@ body {
     font-size: 16pt;
     max-width: 150px;
   }
-}
 
-#yesterday-modal {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  
+  #yesterday-modal {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+  }
 }
 
 #game-side {
@@ -274,6 +283,10 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.no-overflow {
+  overflow-y: hidden
 }
 
 </style>
