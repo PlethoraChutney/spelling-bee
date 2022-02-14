@@ -178,12 +178,22 @@ export default {
           if (data.score === 0) {
             this.showMessage('Not a word.');
           } else {
-            this.score += data.score;
+                        this.score += data.score;
             this.previousWords.push(word);
             if (data.score === word.length + 7) {
               this.showMessage(`Pangram! +${data.score - 7} +7`)
+            } else {
+              let scoreMessages = [
+                '', 'Nice!', '', '', '',
+                'Great!',
+                'Awesome!',
+                'Wow!',
+                'Stupendous!',
+                'Incredible!'
+              ]
+
+              this.showMessage(`${scoreMessages[data.score] || 'Incredible!'} +${data.score}`)
             }
-            this.showMessage(`Nice! +${data.score}`)
           }
         }))
     }

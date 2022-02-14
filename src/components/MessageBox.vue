@@ -1,6 +1,6 @@
 <template>
     <div
-    :class="{'has-message': message.length !== 0}">{{message}}</div>
+    :class="{'has-message': message.length !== 0, 'good-message': message.includes('!')}">{{message}}</div>
 </template>
 
 <script>
@@ -24,6 +24,11 @@ div {
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+div.good-message {
+    background-color: #f1f1f1;
+    color: #2f2f2f;
 }
 
 .has-message {

@@ -101,9 +101,6 @@ class GameState:
 
 
     def score_word(self, word: str) -> int:
-        app.logger.debug(word + ' ' + str(len(word)))
-        app.logger.debug('In list: ' + str(word in self.words))
-        app.logger.debug('Required in word: ' + str(self.required in word))
         if word not in self.words or len(word) < 4 or self.required not in word:
             return 0
 
