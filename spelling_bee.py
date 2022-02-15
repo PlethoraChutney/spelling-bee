@@ -165,49 +165,55 @@ app.logger.debug(game_state.words)
 def index():
     return render_template('index.html')
 
+def get_setup(session):
+    to_return = {
+        'required': game_state.required,
+        'letters': list(game_state.letter_set),
+        'thresholds': list(game_state.thresholds.keys()),
+        'score_levels': list(game_state.thresholds.values()),
+        'num_words': len(game_state.words),
+        'yesterday_words': game_state.yesterday_words
+    }
+
+    if session.get('letters') != list(game_state.letter_set):
+        session['letters'] = list(game_state.letter_set)
+        session['score'] = 0
+        session['already_guessed'] = []
+
+    if 'score' in session:
+        to_return['score'] = session['score']
+    else:
+        session['score'] = 0
+        to_return['score'] = 0
+
+    if 'already_guessed' in session:
+        to_return['already_guessed'] = session['already_guessed']
+    else:
+        session['already_guessed'] = []
+        to_return['already_guessed'] = []
+
+    return to_return
+
+def check_word(session, word):
+    score = game_state.score_word(word.lower())
+    if score != 0:
+        temp = session['score']
+        temp += score
+        session['score'] = temp
+
+        temp = session['already_guessed']
+        temp.append(word.lower())
+        session['already_guessed'] = temp
+
+    return {'score': score}
+
 @app.route('/api', methods = ['POST'])
 def api():
     global game_state
     rj = request.get_json()
 
     if rj['action'] == 'get_setup':
-        to_return = {
-            'required': game_state.required,
-            'letters': list(game_state.letter_set),
-            'thresholds': list(game_state.thresholds.keys()),
-            'score_levels': list(game_state.thresholds.values()),
-            'num_words': len(game_state.words),
-            'yesterday_words': game_state.yesterday_words
-        }
-
-        if session.get('letters') != list(game_state.letter_set):
-            session['letters'] = list(game_state.letter_set)
-            session['score'] = 0
-            session['already_guessed'] = []
-
-        if 'score' in session:
-            to_return['score'] = session['score']
-        else:
-            session['score'] = 0
-            to_return['score'] = 0
-
-        if 'already_guessed' in session:
-            to_return['already_guessed'] = session['already_guessed']
-        else:
-            session['already_guessed'] = []
-            to_return['already_guessed'] = []
-
-        return json.dumps(to_return), 200, {'ContentType': 'application/json'}
+        return json.dumps(get_setup(session)), 200, {'ContentType': 'application/json'}
 
     if rj['action'] == 'check_word':
-        score = game_state.score_word(rj['word'].lower())
-        if score != 0:
-            temp = session['score']
-            temp += score
-            session['score'] = temp
-
-            temp = session['already_guessed']
-            temp.append(rj['word'].lower())
-            session['already_guessed'] = temp
-
-        return json.dumps({'score': score}), 200, {'ContentType': 'application/json'}
+        return json.dumps(check_word(session, rj['word'])), 200, {'ContentType': 'application/json'}
