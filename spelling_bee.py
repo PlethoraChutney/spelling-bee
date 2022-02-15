@@ -1,26 +1,123 @@
 import random
 import os
 import json
+import couchdb
 from datetime import date, datetime, timedelta
 from flask import Flask, render_template, request, session
+
+# -----------------------------------------------------------
+# user database
+# -----------------------------------------------------------
+class Database:
+    def __init__(self) -> None:
+        host = os.environ['COUCHDB_HOST']
+        username = os.environ['COUCHDB_USERNAME']
+        password = os.environ['COUCHDB_PASSWORD']
+        self.server = couchdb.Server(f'http://{username}:{password}@{host}:5984')
+
+        if 'word_lists' in self.server:
+            self.word_db = self.server['word_lists']
+        else:
+            self.word_db = self.server.create('word_lists')
+
+        if 'spelling_bee_users' in self.server:
+            self.user_db = self.server['spelling_bee_users']
+        else:
+            self.user_db = self.server.create('spelling_bee_users')
+
+    @property
+    def today_game(self):
+        today = str(date.today())
+        today_record = self.word_db.get(today)
+
+        if today_record is not None:
+            return today_record
+        
+        with open(os.path.join('data', 'pangram_sets.txt'), 'r') as f:
+            pangram_sets = [set(x.strip()) for x in f]
+        pangram_set = random.choice(pangram_sets)
+        required_letter = random.choice(tuple(pangram_set))
+
+        with open(os.path.join('data', 'words.txt'), 'r') as f:
+            all_words = [x.strip() for x in f]
+        word_list = tuple([x for x in all_words if pangram_set.union(set(x)) == pangram_set and required_letter in x])
+
+        pangram_set.remove(required_letter)
+
+        game_dict = {
+            'hive_letters': list(pangram_set),
+            'queen_letter': required_letter,
+            'word_list': word_list
+        }
+
+        self.word_db[today] = game_dict
+        return self.word_db[today]
+
+    @property
+    def yesterday_words(self):
+        yesterday = str(date.today() - timedelta(days = 1))
+        yesterday_game = self.word_db.get(yesterday)
+        if yesterday_game is not None:
+            return yesterday_game.get('word_list')
+        else:
+            return False
+        
+
 
 # -----------------------------------------------------------
 # game mechanics
 # -----------------------------------------------------------
 class GameState:
-    def __init__(
-        self, letter_set: set, required: str,
-        words: tuple, date_created:date = date.today(),
-        yesterday_words:list = [None],
-        ):
-        self.letter_set = letter_set
-        self.required = required
-        self.words = words
-        self.created = date_created
-        self.yesterday_words = yesterday_words
+    def __init__(self):
+        self.db = Database()
+        self._letter_set = None
+        self._required = None
+        self._words = None
+        self._last_updated = None
 
-        self.maximum_score = sum(self.score_word(x) for x in self.words)
-        self.thresholds = {
+    @property
+    def letter_set(self):
+        if self._letter_set is None or (datetime.now() - self._last_updated).total_seconds() > 3600:
+            self._letter_set = set(self.db.today_game['hive_letters'])
+            self._last_updated = datetime.now()
+
+        return self._letter_set
+
+    @property
+    def required(self):
+        if self._required is None or (datetime.now() - self._last_updated).total_seconds() > 3600:
+            self._required = self.db.today_game['queen_letter']
+            self._last_updated = datetime.now()
+
+        return self._required
+    
+    @property
+    def words(self):
+        if self._words is None or (datetime.now() - self._last_updated).total_seconds() > 3600:
+            self._words = self.db.today_game['word_list']
+            self._last_updated = datetime.now()
+
+        return self._words
+
+    @property
+    def yesterday_words(self):
+        if self.db.yesterday_words:
+            return self.db.yesterday_words
+        else:
+            return ['No words yesterday.']
+
+    @property
+    def maximum_score(self):
+        if 'max_score' in self.db.today_game:
+            return self.db.today_game['max_score']
+        
+        max_score = sum(self.score_word(x) for x in self.db.today_game['word_list'])
+        self.db.today_game['max_score'] = max_score
+        return max_score
+
+    @property
+    def thresholds(self):
+        return {
             'Beginner': 0,
             'Good Start': round(0.02 * self.maximum_score),
             'Moving Up': round(0.05 * self.maximum_score),
@@ -32,72 +129,6 @@ class GameState:
             'Genius': round(0.70 * self.maximum_score),
             'Queen Bee': self.maximum_score
         }
-
-    @property
-    def game_age(self) -> int:
-        return (date.today() - self.created).days
-        
-    @staticmethod
-    def make_new_game(json_file = None):
-        if json_file is None:
-            with open(os.path.join('data', 'pangram_sets.txt'), 'r') as f:
-                pangram_sets = [set(x.strip()) for x in f]
-            pangram_set = random.choice(pangram_sets)
-            required_letter = random.choice(tuple(pangram_set))
-
-            with open(os.path.join('data', 'words.txt'), 'r') as f:
-                all_words = [x.strip() for x in f]
-            word_list = tuple([x for x in all_words if pangram_set.union(set(x)) == pangram_set and required_letter in x])
-
-            pangram_set.remove(required_letter)
-            return GameState(pangram_set, required_letter, word_list)
-        else:
-            app.logger.info('Reading from JSON file')
-            with open(json_file, 'r') as f:
-                letter_sets = json.load(f)
-
-            today, yesterday = list(letter_sets.keys())
-
-            date_created = datetime.strptime(today, '%Y-%m-%d').date()
-
-            letter_set = set(letter_sets[today]['letter_set'])
-            required_letter = letter_sets[today]['required_letter']
-            if 'word_list' in letter_sets[today]:
-                word_list = letter_sets[today]['word_list']
-            else:
-                total_set = letter_set
-                total_set.add(required_letter)
-                with open(os.path.join('data', 'words.txt'), 'r') as f:
-                    word_list = [x.rstrip() for x in f if total_set.union(set(x.rstrip())) == letter_set and required_letter in x.rstrip()]
-
-
-            return GameState(
-                letter_set, required_letter, word_list,
-                date_created = date_created, yesterday_words = letter_sets[yesterday]['words']
-            )
-        
-    def write_to_json(self):
-        yesterday = self.created - timedelta(days = 1)
-        to_write = {
-            str(self.created): {
-                'letter_set': list(self.letter_set),
-                'required_letter': self.required,
-                'word_list': self.words
-            },
-            str(yesterday): {
-                'words': self.yesterday_words
-            }
-        }
-
-        with open('game_state.json', 'w') as f:
-            json.dump(to_write, f)
-
-    def cycle_game(self):
-        new_game = GameState.make_new_game()
-        new_game.yesterday_words = self.words
-
-        new_game.write_to_json()
-        return new_game
 
 
     def score_word(self, word: str) -> int:
@@ -127,18 +158,11 @@ except KeyError:
     app.logger.warning('$SECRET_KEY not in environment.')
     app.secret_key = 'BAD_SECRET_KEY_FOR_DEVELOPMENT'
 
-try:
-    game_state = GameState.make_new_game('game_state.json')
-except FileNotFoundError:
-    game_state = GameState.make_new_game()
+game_state = GameState()
 app.logger.debug(game_state.words)
 
 @app.route('/', methods = ['GET'])
 def index():
-    global game_state
-    if game_state.game_age > 0:
-        game_state = game_state.cycle_game()
-
     return render_template('index.html')
 
 @app.route('/api', methods = ['POST'])
