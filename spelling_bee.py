@@ -4,9 +4,11 @@ import json
 import couchdb
 from datetime import date, datetime, timedelta
 from flask import Flask, render_template, request, session
+from flask_login import LoginManager, UserMixin, login_user, current_user
+from hashlib import sha256
 
 # -----------------------------------------------------------
-# user database
+# user and word database
 # -----------------------------------------------------------
 class Database:
     def __init__(self) -> None:
@@ -61,7 +63,76 @@ class Database:
             return yesterday_game.get('word_list')
         else:
             return False
+
+    def get_user(self, user_id):
+        if user_id in self.user_db:
+            return User(user_id, self.user_db)
+        else:
+            return None
+
+    def authenticate_user(self, user_id, secret_word):
+        user_info = self.get_user(user_id)
         
+        if user_info is None:
+            return 'no user'
+
+        secret_word = sha256(secret_word.encode('utf-8')).hexdigest()
+        if secret_word == user_info['secret_word']:
+            return 'success'
+        else:
+            return 'bad password'
+
+    def create_user(self, user_id):
+        if user_id in self.user_db:
+            return 'user exists'
+
+        with open(os.path.join('data', 'words.txt'), 'r') as f:
+            all_words = [x.strip() for x in f]
+
+        secret_word = random.choice(all_words)
+        secret_hash = sha256(secret_word.encode('utf-8')).hexdigest()
+        
+        self.user_db[user_id] = {
+            'secret_word': secret_hash,
+            'games': {}
+        }
+
+        return secret_word
+        
+# -----------------------------------------------------------
+# users
+# -----------------------------------------------------------
+
+class User(UserMixin):
+
+    def __init__(self, user_id, db) -> None:
+        super().__init__()
+        self.user_id = user_id
+        self.db = db
+
+    @property
+    def today_game(self):
+        game = self.db[self.user_id]['games'].get(str(date.today()))
+        if game is None:
+            game = {'score': 0, 'found_words': []}
+            self.db[self.user_id]['games'][str(date.today())] = game
+        
+        return game
+
+    @property
+    def yesterday_found(self):
+        found_words = self.db[self.user_id].get(str(date.today() - timedelta(days = 1)))
+        if found_words is None:
+            found_words = []
+        else:
+            found_words = found_words['found_words']
+
+        return found_words
+
+    def find_word(self, word, score):
+        _ = self.today_game
+        self.db[self.user_id][str(date.today())]['found_words'].append(word)
+        self.db[self.user_id][str(date.today())]['score'] = self.db[self.user_id][str(date.today)]['score'] + score
 
 
 # -----------------------------------------------------------
@@ -161,49 +232,21 @@ except KeyError:
 game_state = GameState()
 app.logger.debug(game_state.words)
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+@login_manager.user_loader
+def load_user(user_id):
+    return game_state.db.get_user(user_id)
+
 @app.route('/', methods = ['GET'])
 def index():
     return render_template('index.html')
 
-def get_setup(session):
-    to_return = {
-        'required': game_state.required,
-        'letters': list(game_state.letter_set),
-        'thresholds': list(game_state.thresholds.keys()),
-        'score_levels': list(game_state.thresholds.values()),
-        'num_words': len(game_state.words),
-        'yesterday_words': game_state.yesterday_words
-    }
-
-    if session.get('letters') != list(game_state.letter_set):
-        session['letters'] = list(game_state.letter_set)
-        session['score'] = 0
-        session['already_guessed'] = []
-
-    if 'score' in session:
-        to_return['score'] = session['score']
-    else:
-        session['score'] = 0
-        to_return['score'] = 0
-
-    if 'already_guessed' in session:
-        to_return['already_guessed'] = session['already_guessed']
-    else:
-        session['already_guessed'] = []
-        to_return['already_guessed'] = []
-
-    return to_return
-
-def check_word(session, word):
+def check_word(word):
     score = game_state.score_word(word.lower())
     if score != 0:
-        temp = session['score']
-        temp += score
-        session['score'] = temp
-
-        temp = session['already_guessed']
-        temp.append(word.lower())
-        session['already_guessed'] = temp
+        current_user.find_word(word, score)
 
     return {'score': score}
 
@@ -213,7 +256,53 @@ def api():
     rj = request.get_json()
 
     if rj['action'] == 'get_setup':
-        return json.dumps(get_setup(session)), 200, {'ContentType': 'application/json'}
+        if current_user.is_authenticated:
+            to_return = {
+                'auth': True,
+                'user_id': current_user.user_id,
+                'required': game_state.required,
+                'letters': list(game_state.letter_set),
+                'thresholds': list(game_state.thresholds.keys()),
+                'score_levels': list(game_state.thresholds.values()),
+                'num_words': len(game_state.words),
+                'yesterday_words': game_state.yesterday_words,
+                'score': current_user.today_game['score'],
+                'found_words': current_user.today_game['found_words'],
+                'found_yesterday': current_user.yesterday_found
+            }
+        else:
+            to_return = {'auth': False}
+
+
+        return json.dumps(to_return), 200, {'ContentType': 'application/json'}
 
     if rj['action'] == 'check_word':
-        return json.dumps(check_word(session, rj['word'])), 200, {'ContentType': 'application/json'}
+        return json.dumps(check_word(rj['word'])), 200, {'ContentType': 'application/json'}
+
+@app.route('/login', methods = ['POST'])
+def login():
+    global game_state
+    rj = request.get_json()
+
+    if rj['action'] == 'login':
+        result = game_state.db.authenticate_user(rj['user_id'], rj['secret_word'])
+
+        if result == 'success':
+            login_user(game_state.db.get_user(rj['user_id']))
+            to_return = {'success': True}
+        else:
+            to_return = {'success': False, 'reason': result}
+
+        return json.dumps(to_return), 200, {'ContentType': 'application/json'}
+
+    elif rj['action'] == 'create_user':
+        result = game_state.db.create_user(rj['user_id'])
+
+        if result == 'user exists':
+            to_return = {'success': False, 'reason': 'user exists'}
+        else:
+            to_return = {'success': True, 'secret_word': result}
+
+        return json.dumps(to_return), 200, {'ContentType': 'application/json'}
+
+        
