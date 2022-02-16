@@ -75,27 +75,30 @@ class GameState:
         self._words = None
         self._last_updated = None
 
+    def update_game(self):
+        self._words = self.db.today_game['word_list']
+        self._required = self.db.today_game['queen_letter']
+        self._letter_set = set(self.db.today_game['hive_letters'])
+        self._last_updated = datetime.now()
+
     @property
     def letter_set(self):
         if self._letter_set is None or (datetime.now() - self._last_updated).total_seconds() > 3600:
-            self._letter_set = set(self.db.today_game['hive_letters'])
-            self._last_updated = datetime.now()
+            self.update_game()
 
         return self._letter_set
 
     @property
     def required(self):
         if self._required is None or (datetime.now() - self._last_updated).total_seconds() > 3600:
-            self._required = self.db.today_game['queen_letter']
-            self._last_updated = datetime.now()
+            self.update_game()
 
         return self._required
     
     @property
     def words(self):
         if self._words is None or (datetime.now() - self._last_updated).total_seconds() > 3600:
-            self._words = self.db.today_game['word_list']
-            self._last_updated = datetime.now()
+            self.update_game()
 
         return self._words
 
