@@ -160,7 +160,7 @@ export default {
       word = word.join('').toLocaleLowerCase();
 
       if (this.previousWords.includes(word)) {
-        this.showMessage(`Already guessed ${word}`);
+        this.showMessage(`Already found ${word}`);
         return false;
       } else if (word.length < 4) {
         this.showMessage('Too short')
