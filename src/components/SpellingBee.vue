@@ -17,7 +17,7 @@ export default {
         'shuffling': Boolean,
         'message': String,
         'clearWord': Boolean,
-        'userLoggedIn': String
+        'userLoggedIn': Boolean
     },
     emits: ['shuffle-letters', 'check-word'],
     methods: {

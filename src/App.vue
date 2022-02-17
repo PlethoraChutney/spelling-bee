@@ -39,7 +39,6 @@
   >
     <LoginHandler
     :userLoggedIn="userLoggedIn"
-    :userId="userId"
     :loginMessage="loginMessage"
     @login="loginUser($event)"
     />
@@ -126,6 +125,9 @@ export default {
             if (data.auth) {
               this.userLoggedIn = true;
               this.userId = data.user_id;
+              if (this.loginMessage === 'Please log in or create an account:') {
+                this.loginMessage = `Welcome back, ${this.userId}\n`;
+              }
               this.letters = data.letters;
               this.thresholds = data.thresholds;
               this.scoreLevels = data.score_levels;
@@ -148,12 +150,13 @@ export default {
       .then(request => request.json()
         .then(data => {
           if (data.success) {
-            this.loginMessage = 'Login successful!';
+            this.loginMessage = `Welcome back, ${data.user_id}\n`;
             if (data.secret_word) {
-              this.loginMessage = this.loginMessage + `\nYour secret word is: ${data.secret_word}. Write it down for future logins, you won't see it again!!`
+              this.loginMessage = this.loginMessage + `\nYour secret word is: ${data.secret_word}.\nWrite it down for future logins, you won't see it again!!`
             }
             this.userLoggedIn = true;
             this.getSetup();
+
           } else if (data.reason === 'no user') {
             this.loginMessage = 'No such user.';
           } else if (data.reason === 'bad password') {
@@ -167,11 +170,8 @@ export default {
       );
     },
     toggleLoadModal() {
-      console.log('Tried to toggle load modal');
       if (this.userLoggedIn) {
         this.showLoadModal = !this.showLoadModal;
-      } else {
-        console.log('But user not logged in.');
       }
     },
     toggleYesterdayWordModal() {

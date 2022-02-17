@@ -295,7 +295,7 @@ def login():
 
         if result == 'success':
             login_user(game_state.db.get_user(rj['user_id']), remember = True)
-            to_return = {'success': True}
+            to_return = {'success': True, 'user_id': rj['user_id']}
         else:
             to_return = {'success': False, 'reason': result}
 
@@ -307,7 +307,8 @@ def login():
         if result == 'user exists':
             to_return = {'success': False, 'reason': 'user exists'}
         else:
-            to_return = {'success': True, 'secret_word': result}
+            to_return = {'success': True, 'user_id': rj['user_id'], 'secret_word': result}
+            login_user(game_state.db.get_user(rj['user_id']), remember = True)
 
         return json.dumps(to_return), 200, {'ContentType': 'application/json'}
 

@@ -2,7 +2,6 @@
 export default {
     props: {
         'userLoggedIn': Boolean,
-        'userId': String,
         'loginMessage': String
     },
     data() {
@@ -26,12 +25,6 @@ export default {
         <img src="../assets/spelling-bee.svg" alt="">
         <p>{{loginMessage}}</p>
 
-        <div class="button"
-        @click="toggleExistingUser()"
-        :class="{'has-account': existingUser}">
-            I have an account
-        </div>
-
         <div class="input-holder">
             <p>Username:</p>
             <input
@@ -51,18 +44,26 @@ export default {
              >
         </div>
 
+        <div class="button" id="has-account-toggle"
+        @click="toggleExistingUser()"
+        :class="{'has-account': existingUser}">
+            I have an account
+        </div>
+
         <div
          class="button" 
          @click="$emit('login', {
              'userId': enteredUserId,
              'secretWord': secretWord,
              'createNewUser': !existingUser})">
-            Submit
+            <p v-if="!existingUser">Create user</p>
+            <p v-else>Log in</p>
         </div>
+
     </div>
     <div class="message-container" v-else>
         <img src="../assets/spelling-bee.svg" alt="">
-        <p>Welcome back, {{this.userId}}</p>
+        <p>{{loginMessage}}</p>
     </div>
 </template>
 
@@ -79,6 +80,11 @@ div.has-account {
     background-color: #f7da21;
 }
 
+div#has-account-toggle {
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
 div.input-holder {
     display: flex;
     flex-direction: row;
@@ -88,6 +94,11 @@ div.input-holder {
 
 div.input-holder > p {
     margin-right: 10px;
+}
+
+div.button > p {
+    margin: 0;
+    padding: 0;
 }
 
 input {
@@ -102,6 +113,6 @@ input:focus {
 }
 
 p {
-    white-space: pre-line;
+    white-space: pre-wrap;
 }
 </style>
