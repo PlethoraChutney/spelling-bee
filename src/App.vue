@@ -20,7 +20,7 @@
     :scoreLevels="scoreLevels"
     />
     <WordList
-    :wordList="previousWords"
+    :wordList="foundWords"
     :numWords="numWords"
     />
   </div>
@@ -108,7 +108,7 @@ export default {
       'shuffling': false,
       'required': '',
       'score': 0,
-      'previousWords': [],
+      'foundWords': [],
       'message': '',
       'clearWord': false,
       'yesterdaysWords': []
@@ -131,7 +131,7 @@ export default {
               this.numWords = data.num_words;
               this.required = data.required;
               this.score = data.score;
-              this.previousWords = data.already_guessed;
+              this.foundWords = data.found_words;
               this.yesterdaysWords = data.yesterday_words;
             }
           })
@@ -168,8 +168,11 @@ export default {
       );
     },
     toggleLoadModal() {
+      console.log('Tried to toggle load modal');
       if (this.userLoggedIn) {
         this.showLoadModal = !this.showLoadModal;
+      } else {
+        console.log('But user not logged in.');
       }
     },
     toggleYesterdayWordModal() {
@@ -218,7 +221,7 @@ export default {
 
       word = word.join('').toLocaleLowerCase();
 
-      if (this.previousWords.includes(word)) {
+      if (this.foundWords.includes(word)) {
         this.showMessage(`Already guessed ${word}`);
         return false;
       } else if (word.length < 4) {
@@ -238,7 +241,7 @@ export default {
             this.showMessage('Not a word.');
           } else {
                         this.score += data.score;
-            this.previousWords.push(word);
+            this.foundWords.push(word);
             if (data.score === word.length + 7) {
               this.showMessage(`Pangram! +${data.score - 7} +7`)
             } else {

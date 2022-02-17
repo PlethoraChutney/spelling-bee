@@ -11,6 +11,11 @@ export default {
             'secretWord': '',
             'existingUser': false
         }
+    },
+    methods: {
+        toggleExistingUser() {
+            this.existingUser = !this.existingUser;
+        }
     }
 }
 </script>
@@ -19,11 +24,11 @@ export default {
     <div v-if="!userLoggedIn">
         <p>{{loginMessage}}</p>
 
-        <input
-         type="checkbox"
-         name="existing-user-check" 
-         v-model="existingUser" 
-         id="existing-user-check">
+        <div class="button"
+        @click="toggleExistingUser()"
+        :class="{'has-account': existingUser}">
+            I have an account
+        </div>
 
         <input
          type="text" 
@@ -48,10 +53,12 @@ export default {
         </div>
     </div>
     <div v-else>
-        <p>Welcome back</p>
+        <p>Welcome back, {{this.userId}}</p>
     </div>
 </template>
 
 <style scoped>
-
+div.has-account {
+    background-color: #f7da21;
+}
 </style>

@@ -71,7 +71,7 @@ class Database:
             return None
 
     def authenticate_user(self, user_id, secret_word):
-        user_info = self.get_user(user_id)
+        user_info = self.user_db.get(user_id)
         
         if user_info is None:
             return 'no user'
@@ -107,21 +107,27 @@ class User(UserMixin):
 
     def __init__(self, user_id, db) -> None:
         super().__init__()
-        self.user_id = user_id
+        self.id = user_id
         self.db = db
 
     @property
+    def user_doc(self):
+        return self.db[self.id]
+
+    @property
     def today_game(self):
-        game = self.db[self.user_id]['games'].get(str(date.today()))
+        game = self.user_doc['games'].get(str(date.today()))
         if game is None:
-            game = {'score': 0, 'found_words': []}
-            self.db[self.user_id]['games'][str(date.today())] = game
+            user_doc = self.user_doc
+            user_doc['games'][str(date.today())] = {'score': 0, 'found_words': []}
+            self.db[self.id] = user_doc
+            game = self.user_doc['games'].get(str(date.today()))
         
         return game
 
     @property
     def yesterday_found(self):
-        found_words = self.db[self.user_id].get(str(date.today() - timedelta(days = 1)))
+        found_words = self.user_doc['games'].get(str(date.today() - timedelta(days = 1)))
         if found_words is None:
             found_words = []
         else:
@@ -130,10 +136,10 @@ class User(UserMixin):
         return found_words
 
     def find_word(self, word, score):
-        _ = self.today_game
-        self.db[self.user_id][str(date.today())]['found_words'].append(word)
-        self.db[self.user_id][str(date.today())]['score'] = self.db[self.user_id][str(date.today)]['score'] + score
-
+        user_doc = self.db[self.id]
+        user_doc['games'][str(date.today())]['found_words'].append(word)
+        user_doc['games'][str(date.today())]['score'] += score
+        self.db[self.id] = user_doc
 
 # -----------------------------------------------------------
 # game mechanics
@@ -259,7 +265,7 @@ def api():
         if current_user.is_authenticated:
             to_return = {
                 'auth': True,
-                'user_id': current_user.user_id,
+                'user_id': current_user.id,
                 'required': game_state.required,
                 'letters': list(game_state.letter_set),
                 'thresholds': list(game_state.thresholds.keys()),
@@ -288,7 +294,7 @@ def login():
         result = game_state.db.authenticate_user(rj['user_id'], rj['secret_word'])
 
         if result == 'success':
-            login_user(game_state.db.get_user(rj['user_id']))
+            login_user(game_state.db.get_user(rj['user_id']), remember = True)
             to_return = {'success': True}
         else:
             to_return = {'success': False, 'reason': result}
