@@ -16,7 +16,8 @@ export default {
         'required': String,
         'shuffling': Boolean,
         'message': String,
-        'clearWord': Boolean
+        'clearWord': Boolean,
+        'userLoggedIn': Boolean
     },
     emits: ['shuffle-letters', 'check-word'],
     methods: {
@@ -51,10 +52,12 @@ export default {
     },
     mounted() {
         window.addEventListener('keydown', function(e) {
-            if (e.key.toLocaleUpperCase() === 'BACKSPACE') {
-                e.preventDefault();
+            if (this.userLoggedIn) {
+                if (e.key.toLocaleUpperCase() === 'BACKSPACE') {
+                    e.preventDefault();
+                }
+                this.typeLetter(e.key);
             }
-            this.typeLetter(e.key);
         }.bind(this));
     }
 }

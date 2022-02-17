@@ -10,6 +10,7 @@
     :required="required"
     :shuffling="shuffling"
     :clearWord="clearWord"
+    :userLoggedIn="userLoggedIn"
     @shuffle-letters="shuffleLetters()"
     @check-word="checkWord($event)"/>
   </div>
@@ -20,7 +21,7 @@
     :scoreLevels="scoreLevels"
     />
     <WordList
-    :wordList="previousWords"
+    :wordList="foundWords"
     :numWords="numWords"
     />
   </div>
@@ -32,6 +33,16 @@
     :numWords="yesterdaysWords.length"
     />
   </ModalWindow>
+  <ModalWindow
+   v-if="showLoadModal"
+   @toggleVisible="toggleLoadModal"
+  >
+    <LoginHandler
+    :userLoggedIn="userLoggedIn"
+    :loginMessage="loginMessage"
+    @login="loginUser($event)"
+    />
+  </ModalWindow>
 </template>
 
 <script>
@@ -39,9 +50,10 @@ import SpellingBee from './components/SpellingBee.vue'
 import WordList from './components/WordList.vue'
 import ScoreBar from './components/ScoreBar.vue'
 import ModalWindow from './components/ModalWindow.vue'
+import LoginHandler from './components/LoginHandler.vue'
 
-function sendRequest(body) {
-    return fetch('/api', {
+function sendRequest(body, dest = '/api') {
+    return fetch(dest, {
         method: 'POST',
         mode: 'cors',
         cache: 'no-cache',
@@ -79,10 +91,15 @@ export default {
     SpellingBee,
     WordList,
     ScoreBar,
-    ModalWindow
+    ModalWindow,
+    LoginHandler
   },
   data() {
     return {
+      'showLoadModal': true,
+      'loginMessage': 'Please log in or create an account:',
+      'userLoggedIn': false,
+      'userId': '',
       'showWordModal': false,
       'letters': ['','','','','',''],
       'thresholds': ['Beginner', 'Starting'],
@@ -91,28 +108,72 @@ export default {
       'shuffling': false,
       'required': '',
       'score': 0,
-      'previousWords': [],
+      'foundWords': [],
       'message': '',
       'clearWord': false,
       'yesterdaysWords': []
     }
   },
   created() {
-    sendRequest({'action': 'get_setup'})
-      .then(request => request.json()
-        .then(data => {
-          this.letters = data.letters;
-          this.thresholds = data.thresholds;
-          this.scoreLevels = data.score_levels;
-          this.numWords = data.num_words;
-          this.required = data.required;
-          this.score = data.score;
-          this.previousWords = data.already_guessed;
-          this.yesterdaysWords = data.yesterday_words;
-        })
-      )
+    this.getSetup();
   },
   methods: {
+    getSetup() {
+      sendRequest({'action': 'get_setup'})
+        .then(request => request.json()
+          .then(data => {
+            if (data.auth) {
+              this.userLoggedIn = true;
+              this.userId = data.user_id;
+              if (this.loginMessage === 'Please log in or create an account:') {
+                this.loginMessage = `Welcome back, ${this.userId}\n`;
+              }
+              this.letters = data.letters;
+              this.thresholds = data.thresholds;
+              this.scoreLevels = data.score_levels;
+              this.numWords = data.num_words;
+              this.required = data.required;
+              this.score = data.score;
+              this.foundWords = data.found_words;
+              this.yesterdaysWords = data.yesterday_words;
+            }
+          })
+        )
+    },
+    loginUser(loginInfo) {
+      let requestBody = {
+        'action': loginInfo.createNewUser ? 'create_user' : 'login',
+        'user_id': loginInfo.userId,
+        'secret_word': loginInfo.secretWord
+      }
+      sendRequest(requestBody, '/login')
+      .then(request => request.json()
+        .then(data => {
+          if (data.success) {
+            this.loginMessage = `Welcome back, ${data.user_id}\n`;
+            if (data.secret_word) {
+              this.loginMessage = this.loginMessage + `\nYour secret word is: ${data.secret_word}.\nWrite it down for future logins, you won't see it again!!`
+            }
+            this.userLoggedIn = true;
+            this.getSetup();
+
+          } else if (data.reason === 'no user') {
+            this.loginMessage = 'No such user.';
+          } else if (data.reason === 'bad password') {
+            this.loginMessage = 'Wrong secret word.';
+          } else if (data.reason === 'user exists') {
+            this.loginMessage = 'User already exists';
+          } else {
+            this.loginMessage = 'Unknown error. Please contact Rich.';
+          }
+        })
+      );
+    },
+    toggleLoadModal() {
+      if (this.userLoggedIn) {
+        this.showLoadModal = !this.showLoadModal;
+      }
+    },
     toggleYesterdayWordModal() {
       this.showWordModal = !this.showWordModal;
     },
@@ -159,7 +220,7 @@ export default {
 
       word = word.join('').toLocaleLowerCase();
 
-      if (this.previousWords.includes(word)) {
+      if (this.foundWords.includes(word)) {
         this.showMessage(`Already found ${word}`);
         return false;
       } else if (word.length < 4) {
@@ -179,7 +240,7 @@ export default {
             this.showMessage('Not a word.');
           } else {
                         this.score += data.score;
-            this.previousWords.push(word);
+            this.foundWords.push(word);
             if (data.score === word.length + 7) {
               this.showMessage(`Pangram! +${data.score - 7} +7`)
             } else {
