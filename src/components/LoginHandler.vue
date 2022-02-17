@@ -9,7 +9,8 @@ export default {
         return {
             'enteredUserId': '',
             'secretWord': '',
-            'existingUser': false
+            'existingUser': false,
+            'publicPath': process.env.BASE_URL
         }
     },
     methods: {
@@ -21,7 +22,8 @@ export default {
 </script>
 
 <template>
-    <div v-if="!userLoggedIn">
+    <div class="message-container" v-if="!userLoggedIn">
+        <img src="../assets/spelling-bee.svg" alt="">
         <p>{{loginMessage}}</p>
 
         <div class="button"
@@ -30,18 +32,24 @@ export default {
             I have an account
         </div>
 
-        <input
-         type="text" 
-         v-model="enteredUserId" 
-         name="user-id-input" 
-         id="user-id-input">
+        <div class="input-holder">
+            <p>Username:</p>
+            <input
+             type="text"
+             v-model="enteredUserId"
+             name="user-id-input"
+             id="user-id-input">
+        </div>
 
-        <input
-         type="text" 
-         v-model="secretWord" 
-         name="secret-word-input" 
-         id="secret-word-input" 
-         v-if="existingUser">
+        <div class="input-holder" v-if="existingUser">
+            <p>Secret word:</p>
+            <input
+             type="text"
+             v-model="secretWord"
+             name="secret-word-input"
+             id="secret-word-input"
+             >
+        </div>
 
         <div
          class="button" 
@@ -52,13 +60,48 @@ export default {
             Submit
         </div>
     </div>
-    <div v-else>
+    <div class="message-container" v-else>
+        <img src="../assets/spelling-bee.svg" alt="">
         <p>Welcome back, {{this.userId}}</p>
     </div>
 </template>
 
 <style scoped>
+img {
+    width: 150px;
+}
+
+div.message-container {
+    width: 300px;
+}
+
 div.has-account {
     background-color: #f7da21;
+}
+
+div.input-holder {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+div.input-holder > p {
+    margin-right: 10px;
+}
+
+input {
+    height: 1.5rem;
+    box-sizing: border-box;
+    border: 1px solid #e2e2e2;
+}
+
+input:focus {
+    outline: none;
+    border: 2px solid #f7da21;
+}
+
+p {
+    white-space: pre-line;
 }
 </style>

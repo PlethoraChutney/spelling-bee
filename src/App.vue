@@ -10,6 +10,7 @@
     :required="required"
     :shuffling="shuffling"
     :clearWord="clearWord"
+    :userLoggedIn="userLoggedIn"
     @shuffle-letters="shuffleLetters()"
     @check-word="checkWord($event)"/>
   </div>
@@ -149,11 +150,9 @@ export default {
           if (data.success) {
             this.loginMessage = 'Login successful!';
             if (data.secret_word) {
-              this.loginMessage = this.loginMessage + `\nYour secret word is: ${data.secret_word}. Write it down for future logins!`
+              this.loginMessage = this.loginMessage + `\nYour secret word is: ${data.secret_word}. Write it down for future logins, you won't see it again!!`
             }
-            window.setTimeout(() => {
-              this.showLoadModal = false;
-            }, 1000);
+            this.userLoggedIn = true;
             this.getSetup();
           } else if (data.reason === 'no user') {
             this.loginMessage = 'No such user.';
