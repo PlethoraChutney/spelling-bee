@@ -30,7 +30,7 @@ export default {
     },
     methods: {
         getUniqueChars(str) {
-            return String.prototype.concat(...new Set(str)).length;
+            return String.prototype.concat(...new Set(str.toLocaleLowerCase())).length;
         }
     }
 }
