@@ -118,6 +118,7 @@ export default {
     justify-content: center;
     cursor: pointer;
     user-select: none;
+    touch-action: none;
 }
 #button-container {
     margin-top: 25px;

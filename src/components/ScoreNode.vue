@@ -48,5 +48,6 @@ circle.current-node {
 
 text {
     font-size: 10pt;
+    user-select: none;
 }
 </style>

@@ -71,6 +71,7 @@ export default {
 <style scoped>
 polygon {
     fill: #e6e6e6;
+    touch-action: none;
 }
 
 polygon.required {
@@ -90,6 +91,7 @@ text {
     font-size: 24pt;
     font-weight: bold;
     user-select: none;
+    touch-action: none;
 }
 
 text.hide-for-shuffle {
