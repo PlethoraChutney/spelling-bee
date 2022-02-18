@@ -22,6 +22,7 @@
     />
     <WordList
     :wordList="foundWords"
+    :foundWords="[]"
     :numWords="numWords"
     />
   </div>
@@ -30,6 +31,7 @@
     <h1>Yesterday's Words</h1>
     <WordList
     :wordList="yesterdaysWords"
+    :foundWords="yesterdayFound"
     :numWords="yesterdaysWords.length"
     />
   </ModalWindow>
@@ -111,7 +113,8 @@ export default {
       'foundWords': [],
       'message': '',
       'clearWord': false,
-      'yesterdaysWords': []
+      'yesterdaysWords': [],
+      'yesterdayFound': []
     }
   },
   created() {

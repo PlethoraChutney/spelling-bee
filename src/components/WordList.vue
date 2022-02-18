@@ -2,6 +2,7 @@
 export default {
     props: {
         'wordList': Array,
+        'foundWords': Array,
         'numWords': Number
     },
     computed: {
@@ -26,6 +27,11 @@ export default {
                 this.titleCaseWordList.slice(split*2)
             ];
         }
+    },
+    methods: {
+        getUniqueChars(str) {
+            return String.prototype.concat(...new Set(str)).length;
+        }
     }
 }
 </script>
@@ -35,21 +41,30 @@ export default {
         <div class="column">
             <p
             v-for="(word, index) in thirdSplit[0]"
-            :key="index">
+            :key="index"
+            :class="{
+                'found': foundWords.includes(word.toLocaleLowerCase()),
+                'pangram': this.getUniqueChars(word) === 7}">
                 {{word}}
             </p>
         </div>
         <div class="column">
             <p
             v-for="(word, index) in thirdSplit[1]"
-            :key="index">
+            :key="index"
+            :class="{
+                'found': foundWords.includes(word.toLocaleLowerCase()),
+                'pangram': this.getUniqueChars(word) === 7}">
                 {{word}}
             </p>
         </div>
         <div class="column">
             <p
             v-for="(word, index) in thirdSplit[2]"
-            :key="index">
+            :key="index"
+            :class="{
+                'found': foundWords.includes(word.toLocaleLowerCase()),
+                'pangram': this.getUniqueChars(word) === 7}">
                 {{word}}
             </p>
         </div>
@@ -85,6 +100,23 @@ p {
     margin-bottom: 0.5rem;
     width: 100%;
     border-bottom: 1px solid #dddddd;
+}
+
+p.found {
+    text-decoration: line-through;
+    color: #aaa;
+}
+
+p.pangram {
+    color: #f7da21;
+    animation: glow 3s infinite;
+    font-weight: bold;
+}
+
+@keyframes glow {
+    0%   {filter: brightness(0.9);}
+    50%  {filter: brightness(1.1);}
+    100% {filter: brightness(0.9);}
 }
 
 </style>
