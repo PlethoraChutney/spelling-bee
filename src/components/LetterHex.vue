@@ -1,4 +1,6 @@
 <script>
+import gsap from 'gsap'
+
 let points = [];
 [0, 1/3, 2/3, 1, 4/3, 5/3, 2].forEach(e => {
                 points.push([(Math.cos(Math.PI * e)), (Math.sin(Math.PI * e))])
@@ -14,7 +16,8 @@ export default {
     },
     data() {
         return {
-            size: 50
+            size: 50,
+            targetSize: 50
         }
     },
     computed: {
@@ -53,12 +56,29 @@ export default {
 
             return centerPoint;
         }
+    },
+    methods: {
+        handleClick() {
+            this.targetSize = 55;
+            window.setTimeout(() => {
+                this.targetSize = 50;
+            }, 50);
+            this.$emit('typeLetter', this.letter);
+        }
+    },
+    watch: {
+        targetSize(n) {
+            gsap.to(this, {
+               duration: 0.05,
+               size: Number(n) || 50 
+            })
+        }
     }
 }
 </script>
 
 <template>
-    <g @click="$emit('typeLetter', letter)">
+    <g @click="handleClick()">
     <polygon
     :points="hexPoints"
     :class="{'required': isRequired}"
