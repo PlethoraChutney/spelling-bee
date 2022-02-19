@@ -245,7 +245,7 @@ except KeyError:
 
 game_state = GameState()
 
-if 'BEE_SHOW_WORDS' in os.environ:
+if os.environ.get('BEE_SHOW_WORDS') == 'true':
     app.logger.debug(game_state.words)
 
 login_manager = LoginManager()

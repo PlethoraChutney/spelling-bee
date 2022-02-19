@@ -75,7 +75,6 @@ export default {
         :letter="required"
         :radius=0
         :angle=0
-        :size=50
         :shuffling="false"
         :isRequired="true"/>
         <LetterHex
@@ -85,7 +84,6 @@ export default {
         :letter="letter"
         :radius=97
         :angle="index"
-        :size=50
         :shuffling="shuffling"
         :isRequired="false"/>
     </svg>

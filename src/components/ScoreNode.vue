@@ -30,7 +30,7 @@ export default {
     y="26"
     text-anchor="middle"
     dominant-baseline="middle"
-    >{{currentScore}}</text>
+    >{{currentScore.toFixed(0)}}</text>
 </template>
 
 <style scoped>

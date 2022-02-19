@@ -16,7 +16,7 @@
   </div>
   <div id="score-side" class="v-center" :class="{'no-overflow': showWordModal}">
     <ScoreBar
-    :score="score"
+    :score="tweenedScore"
     :thresholds="thresholds"
     :scoreLevels="scoreLevels"
     />
@@ -53,6 +53,7 @@ import WordList from './components/WordList.vue'
 import ScoreBar from './components/ScoreBar.vue'
 import ModalWindow from './components/ModalWindow.vue'
 import LoginHandler from './components/LoginHandler.vue'
+import gsap from 'gsap'
 
 function sendRequest(body, dest = '/api') {
     return fetch(dest, {
@@ -110,6 +111,7 @@ export default {
       'shuffling': false,
       'required': '',
       'score': 0,
+      'tweenedScore': 0,
       'foundWords': [],
       'message': '',
       'clearWord': false,
@@ -119,6 +121,11 @@ export default {
   },
   created() {
     this.getSetup();
+  },
+  watch: {
+    score(n) {
+      gsap.to(this, {duration: 0.5, tweenedScore: Number(n) || 0})
+    }
   },
   methods: {
     getSetup() {
@@ -243,7 +250,7 @@ export default {
           if (data.score === 0) {
             this.showMessage('Not a word.');
           } else {
-                        this.score += data.score;
+            this.score += data.score;
             this.foundWords.push(word);
             if (data.score === word.length + 7) {
               this.showMessage(`Pangram! +${data.score - 7} +7`)

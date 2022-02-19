@@ -10,8 +10,12 @@ export default {
         'isRequired': Boolean,
         'radius': Number,
         'angle': Number,
-        'size': Number,
         'shuffling': Boolean
+    },
+    data() {
+        return {
+            size: 50
+        }
     },
     computed: {
         hexPoints: function() {
@@ -82,10 +86,6 @@ g {
     cursor: pointer;
 }
 
-g:hover {
-    filter: brightness(0.9);
-}
-
 text {
     font-family: Lato, sans-serif;
     font-size: 24pt;
@@ -102,5 +102,11 @@ text.hide-for-shuffle {
     0%   {opactiy: 1}
     50%  {opacity: 0}
     100% {opacity: 1}
+}
+
+@media screen and (pointer: fine) {
+    g:hover {
+        filter: brightness(0.9);
+    }
 }
 </style>
