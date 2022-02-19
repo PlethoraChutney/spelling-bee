@@ -369,4 +369,8 @@ body {
   overflow-y: hidden
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 </style>

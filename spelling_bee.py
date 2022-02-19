@@ -72,15 +72,23 @@ class Database:
             return None
 
     def authenticate_user(self, user_id, secret_word):
-        user_info = self.user_db.get(user_id)
+        user_info = self.get_user(user_id)
         
         if user_info is None:
             return 'no user'
 
+
         secret_word = sha256(secret_word.encode('utf-8')).hexdigest()
-        if secret_word == user_info['secret_word']:
+        
+        app.logger.debug(f'Authenticating user {user_info.id}')
+        app.logger.debug(f'Submitted hash: {secret_word}')
+        app.logger.debug(f'Stored hash: {user_info.user_doc["secret_word"]}')
+        
+        if secret_word == user_info.user_doc['secret_word']:
+            app.logger.debug('Match')
             return 'success'
         else:
+            app.logger.debug('Mismatch')
             return 'bad password'
 
     def create_user(self, user_id):
