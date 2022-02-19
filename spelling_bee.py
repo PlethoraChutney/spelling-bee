@@ -123,16 +123,21 @@ class User(UserMixin):
     def user_doc(self):
         return self.db[self.id]
 
+    def validate_game(self):
+        game = self.user_doc['games'].get(str(date.today()))
+        user_doc = self.user_doc
+        if game is None:
+            user_doc['games'][str(date.today())] = {'score': 0, 'found_words': []}
+        else:
+            user_doc['games'][str(date.today())]['found_words'] = list(set(game['found_words']))
+            user_doc['games'][str(date.today())]['score'] = sum([len(x) if len(x) > 4 else 1 for x in game['found_words']])
+        self.db[self.id] = user_doc
+
+        return self.db[self.id]['games'].get(str(date.today()))
+
     @property
     def today_game(self):
-        game = self.user_doc['games'].get(str(date.today()))
-        if game is None:
-            user_doc = self.user_doc
-            user_doc['games'][str(date.today())] = {'score': 0, 'found_words': []}
-            self.db[self.id] = user_doc
-            game = self.user_doc['games'].get(str(date.today()))
-        
-        return game
+        return self.validate_game()
 
     @property
     def yesterday_found(self):
@@ -145,7 +150,7 @@ class User(UserMixin):
         return found_words
 
     def find_word(self, word, score):
-        user_doc = self.db[self.id]
+        user_doc = self.user_doc
         user_doc['games'][str(date.today())]['found_words'].append(word)
         user_doc['games'][str(date.today())]['score'] += score
         self.db[self.id] = user_doc
