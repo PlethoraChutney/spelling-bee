@@ -138,6 +138,7 @@ export default {
               this.required = data.required;
               this.score = data.score;
               this.foundWords = data.found_words;
+              this.yesterdayFound = data.found_yesterday;
               this.yesterdaysWords = data.yesterday_words;
             }
           })

@@ -1,4 +1,5 @@
 import random
+import sys
 import os
 import json
 import couchdb
@@ -235,11 +236,17 @@ app = Flask(
 try:
     app.secret_key = os.environ['SECRET_KEY']
 except KeyError:
-    app.logger.warning('$SECRET_KEY not in environment.')
-    app.secret_key = 'BAD_SECRET_KEY_FOR_DEVELOPMENT'
+    if app.debug:
+        app.logger.warning('$SECRET_KEY not in environment.')
+        app.secret_key = 'BAD_SECRET_KEY_FOR_DEVELOPMENT'
+    else:
+        app.logger.error('Must include secret key for production mode')
+        sys.exit(1)
 
 game_state = GameState()
-app.logger.debug(game_state.words)
+
+if 'BEE_SHOW_WORDS' in os.environ:
+    app.logger.debug(game_state.words)
 
 login_manager = LoginManager()
 login_manager.init_app(app)

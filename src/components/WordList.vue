@@ -79,6 +79,7 @@ export default {
     flex-direction: row;
     justify-content: center;
     margin-top: 20px;
+    margin-bottom: 10px;
     text-align: left;
     border: 3px solid #dddddd;
     border-radius: 5px;
