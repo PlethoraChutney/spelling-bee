@@ -83,7 +83,7 @@ class Database:
         app.logger.debug(f'Authenticating user {user_info.id}')
         app.logger.debug(f'Submitted hash: {secret_word}')
         app.logger.debug(f'Stored hash: {user_info.user_doc["secret_word"]}')
-        
+
         if secret_word == user_info.user_doc['secret_word']:
             app.logger.debug('Match')
             return 'success'
@@ -269,7 +269,7 @@ def index():
 
 def check_word(word):
     score = game_state.score_word(word.lower())
-    if score != 0:
+    if score != 0 and word not in current_user.today_game['found_words']:
         current_user.find_word(word, score)
 
     return {'score': score}
