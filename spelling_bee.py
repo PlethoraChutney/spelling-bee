@@ -4,7 +4,7 @@ import os
 import json
 import couchdb
 from datetime import date, datetime, timedelta
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request
 from flask_login import LoginManager, UserMixin, login_user, current_user
 from hashlib import sha256
 
@@ -123,21 +123,20 @@ class User(UserMixin):
     def user_doc(self):
         return self.db[self.id]
 
-    def validate_game(self):
+    @property
+    def today_game(self):
         game = self.user_doc['games'].get(str(date.today()))
         user_doc = self.user_doc
         if game is None:
-            user_doc['games'][str(date.today())] = {'score': 0, 'found_words': []}
-        else:
-            user_doc['games'][str(date.today())]['found_words'] = list(set(game['found_words']))
-            user_doc['games'][str(date.today())]['score'] = sum([len(x) if len(x) > 4 else 1 for x in game['found_words']])
-        self.db[self.id] = user_doc
+            user_doc['games'][str(date.today())] = {'found_words': []}
+            self.db[self.id] = user_doc
+            game = {'found_words': []}
 
-        return self.db[self.id]['games'].get(str(date.today()))
+        return game
 
     @property
-    def today_game(self):
-        return self.validate_game()
+    def found_words(self):
+        return list(set(self.today_game['found_words']))
 
     @property
     def yesterday_found(self):
@@ -149,10 +148,9 @@ class User(UserMixin):
 
         return found_words
 
-    def find_word(self, word, score):
+    def find_word(self, word):
         user_doc = self.user_doc
         user_doc['games'][str(date.today())]['found_words'].append(word)
-        user_doc['games'][str(date.today())]['score'] += score
         self.db[self.id] = user_doc
 
 # -----------------------------------------------------------
@@ -274,8 +272,8 @@ def index():
 
 def check_word(word):
     score = game_state.score_word(word.lower())
-    if score != 0 and word not in current_user.today_game['found_words']:
-        current_user.find_word(word, score)
+    if score != 0 and word not in current_user.found_words:
+        current_user.find_word(word)
 
     return {'score': score}
 
@@ -295,8 +293,10 @@ def api():
                 'score_levels': list(game_state.thresholds.values()),
                 'num_words': len(game_state.words),
                 'yesterday_words': game_state.yesterday_words,
-                'score': current_user.today_game['score'],
-                'found_words': current_user.today_game['found_words'],
+                'score': sum(
+                    [game_state.score_word(x.lower()) for x in current_user.found_words]
+                    ),
+                'found_words': current_user.found_words,
                 'found_yesterday': current_user.yesterday_found
             }
         else:

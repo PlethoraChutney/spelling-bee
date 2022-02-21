@@ -9,6 +9,7 @@ __pycache__/
 # local env files
 .env.local
 .env.*.local
+setup_env.ps1
 
 # Log files
 npm-debug.log*
