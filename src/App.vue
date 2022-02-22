@@ -19,6 +19,7 @@
     :score="tweenedScore"
     :thresholds="thresholds"
     :scoreLevels="scoreLevels"
+    @emojiStringCopied="showMessage('Emoji string copied!')"
     />
     <WordList
     :wordList="foundWords"

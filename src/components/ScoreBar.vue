@@ -59,6 +59,7 @@ export default {
     methods: {
         copyToClipboard() {
             navigator.clipboard.writeText(this.emojiString);
+            this.$emit('emojiStringCopied');
         }
     }
 }
