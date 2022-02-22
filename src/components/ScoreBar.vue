@@ -43,13 +43,29 @@ export default {
             })
 
             return {'nonCurrent': nonCurrentScoreLevels, 'current': currentScoreLevel};
+        },
+        emojiString() {
+            let currentEmojiString = [`${this.score} · ${this.currentScoreLevel}: `];
+            this.scoreLevels.forEach(scoreLevel => {
+                if (scoreLevel <= this.score) {
+                    currentEmojiString.push('🟡');
+                } else {
+                    currentEmojiString.push('⚪');
+                }
+            })
+            return currentEmojiString.join('');
+        }
+    },
+    methods: {
+        copyToClipboard() {
+            navigator.clipboard.writeText(this.emojiString);
         }
     }
 }
 </script>
 
 <template>
-    <div id="score-bar">
+    <div id="score-bar" @click="copyToClipboard()">
         <p class="v-center">{{currentScoreLevel}}</p>
         <svg
         width="380"
