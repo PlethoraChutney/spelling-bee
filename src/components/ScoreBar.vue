@@ -46,13 +46,17 @@ export default {
         },
         emojiString() {
             let currentEmojiString = [`${this.score} · ${this.currentScoreLevel}: `];
-            this.scoreLevels.forEach(scoreLevel => {
-                if (scoreLevel <= this.score) {
-                    currentEmojiString.push('🟡');
-                } else {
-                    currentEmojiString.push('⚪');
-                }
-            })
+            if (this.scoreLevels.every(e => e <= this.score)) {
+                currentEmojiString.push('👑🐝')
+            } else {
+                this.scoreLevels.forEach(scoreLevel => {
+                    if (scoreLevel <= this.score) {
+                        currentEmojiString.push('🟡');
+                    } else {
+                        currentEmojiString.push('⚪');
+                    }
+                })
+            }
             return currentEmojiString.join('');
         }
     },
