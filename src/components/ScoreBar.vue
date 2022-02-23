@@ -70,11 +70,12 @@ export default {
 </script>
 
 <template>
-    <div id="score-bar" @click="copyToClipboard()">
+    <div id="score-bar">
         <p class="v-center">{{currentScoreLevel}}</p>
         <svg
         width="380"
         height="50"
+        @click="copyToClipboard()"
         >
             <path class="current-score" fill="transparent"
             :d="scoreSvgPaths[0]"
