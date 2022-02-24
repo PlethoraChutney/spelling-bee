@@ -24,6 +24,8 @@ div {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    position: sticky;
+    top: 20px;
 }
 
 div.good-message {
