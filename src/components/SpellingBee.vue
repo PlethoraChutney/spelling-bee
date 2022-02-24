@@ -17,7 +17,7 @@ export default {
         'shuffling': Boolean,
         'message': String,
         'clearWord': Boolean,
-        'userLoggedIn': Boolean
+        'captureType': Boolean
     },
     emits: ['shuffle-letters', 'check-word'],
     methods: {
@@ -52,7 +52,7 @@ export default {
     },
     mounted() {
         window.addEventListener('keydown', function(e) {
-            if (this.userLoggedIn) {
+            if (this.captureType) {
                 if (e.key.toLocaleUpperCase() === 'BACKSPACE') {
                     e.preventDefault();
                 }

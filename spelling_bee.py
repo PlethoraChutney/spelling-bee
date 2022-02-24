@@ -57,7 +57,7 @@ class Database:
         return self.word_db[today]
 
     @property
-    def yesterday_words(self):
+    def yesterday_words(self) -> list | bool:
         yesterday = str(date.today() - timedelta(days = 1))
         yesterday_game = self.word_db.get(yesterday)
         if yesterday_game is not None:
@@ -71,7 +71,7 @@ class Database:
         else:
             return None
 
-    def authenticate_user(self, user_id, secret_word):
+    def authenticate_user(self, user_id, secret_word) -> str:
         user_info = self.get_user(user_id)
         
         if user_info is None:
@@ -154,8 +154,7 @@ class User(UserMixin):
         self.db[self.id] = user_doc
 
     def compare_word_list(self, other_user) -> list:
-        diff_words = set(self.found_words) - set(other_user.found_words)
-        return list(diff_words)
+        return list(set(self.found_words) - set(other_user.found_words))
 
 # -----------------------------------------------------------
 # game mechanics
@@ -241,6 +240,16 @@ class GameState:
 
         return score
 
+    def work_together(self, user:User, coop_user_id:str) -> dict:
+        return_dict = {'success': True, 'words': []}
+        coop_user = self.db.get_user(coop_user_id)
+        if coop_user is None:
+            return_dict['success'] = False
+        else:
+            return_dict['words'] = list(user.compare_word_list(coop_user))
+
+        return return_dict
+
 # -----------------------------------------------------------
 # flask app
 # -----------------------------------------------------------
@@ -313,7 +322,7 @@ def api():
         return json.dumps(check_word(rj['word'])), 200, {'ContentType': 'application/json'}
 
     elif rj['action'] == 'work_together':
-        pass
+        return json.dumps(game_state.work_together(current_user, rj['coop_user'])), 200, {'ContentType': 'application/json'}
 
 @app.route('/login', methods = ['POST'])
 def login():

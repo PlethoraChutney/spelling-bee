@@ -10,7 +10,7 @@
     :required="required"
     :shuffling="shuffling"
     :clearWord="clearWord"
-    :userLoggedIn="userLoggedIn"
+    :captureType="userLoggedIn && !showCoopModal"
     @shuffle-letters="shuffleLetters()"
     @check-word="checkWord($event)"/>
   </div>
@@ -26,6 +26,11 @@
     :foundWords="[]"
     :numWords="numWords"
     />
+    <div class="button"
+    @click="this.showCoopModal = !this.showCoopModal"
+    >
+      Work together
+    </div>
   </div>
   <ModalWindow v-if="showWordModal"
   @toggleVisible="toggleYesterdayWordModal">
@@ -46,6 +51,17 @@
     @login="loginUser($event)"
     />
   </ModalWindow>
+  <ModalWindow
+  v-if="showCoopModal"
+  @toggleVisible="this.showCoopModal = !this.showCoopModal"
+  >
+    <CoopModal
+      :coopWords="coopWords"
+      :coopUserSuccess='coopUserSuccess'
+      :hasCooperated="hasCooperated"
+      @getCoopWords="workTogether($event)"
+    />
+  </ModalWindow>
 </template>
 
 <script>
@@ -54,6 +70,7 @@ import WordList from './components/WordList.vue'
 import ScoreBar from './components/ScoreBar.vue'
 import ModalWindow from './components/ModalWindow.vue'
 import LoginHandler from './components/LoginHandler.vue'
+import CoopModal from './components/CoopModal.vue'
 import gsap from 'gsap'
 
 function sendRequest(body, dest = '/api') {
@@ -96,7 +113,8 @@ export default {
     WordList,
     ScoreBar,
     ModalWindow,
-    LoginHandler
+    LoginHandler,
+    CoopModal
   },
   data() {
     return {
@@ -117,7 +135,11 @@ export default {
       'message': '',
       'clearWord': false,
       'yesterdaysWords': [],
-      'yesterdayFound': []
+      'yesterdayFound': [],
+      'showCoopModal': false,
+      'coopUserSuccess': true,
+      'hasCooperated': false,
+      'coopWords': []
     }
   },
   created() {
@@ -267,6 +289,20 @@ export default {
 
               this.showMessage(`${scoreMessages[data.score] || 'Incredible!'} +${data.score}`)
             }
+          }
+        }))
+    },
+    workTogether(coopUserId) {
+      this.coopWords = [];
+      this.hasCooperated = true;
+      sendRequest({
+        'action': 'work_together',
+        'coop_user': coopUserId
+      }).then(request => request.json()
+        .then(data => {
+          this.coopUserSuccess = data.success;
+          if (data.success) {
+            this.coopWords = data.words;
           }
         }))
     }
