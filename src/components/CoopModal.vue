@@ -1,25 +1,26 @@
 <template>
-    <h2>Work together!</h2>
-    <p>
-        Want to help your friends? Enter their username here to see
-        what words you have that they don't.
-    </p>
-    <p>
-        Give good hints, don't just tell them the words!
-    </p>
-    <div class="h-flex">
-        <input type="text" v-model="this.coopUser">
-        <div
-        class="button"
-        @click="$emit('getCoopWords', coopUser)"
-        >Get words</div>
-    </div>
-
-    <div
-    v-if="!coopUserSuccess">
+    <div class="modal-container">
+        <h2>Work together!</h2>
         <p>
-            I couldn't find that user --- check spelling and capitalization!
+            Want to help your friends? Enter their username here to see
+            what words you have that they don't.
         </p>
+        <p>
+            Give good hints, don't just tell them the words!
+        </p>
+        <div class="h-flex">
+            <input type="text" v-model="this.coopUser">
+            <div
+            class="button"
+            @click="$emit('getCoopWords', coopUser)"
+            >Get words</div>
+        </div>
+        <div
+        v-if="!coopUserSuccess">
+            <p>
+                I couldn't find that user --- check spelling and capitalization!
+            </p>
+        </div>
     </div>
 
     <WordList
@@ -71,6 +72,11 @@ div.h-flex {
     flex-direction: row;
     justify-content: center;
     align-items: center;
+}
+
+div.modal-container {
+    width: 90%;
+    margin: 10px;
 }
 
 </style>
