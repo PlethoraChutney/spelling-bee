@@ -29,7 +29,7 @@ class Database:
             self.user_db = self.server.create('spelling_bee_users')
 
     @property
-    def today_game(self):
+    def today_game(self) -> dict:
         today = str(date.today())
         today_record = self.word_db.get(today)
 
@@ -91,7 +91,7 @@ class Database:
             app.logger.debug('Mismatch')
             return 'bad password'
 
-    def create_user(self, user_id):
+    def create_user(self, user_id) -> str:
         if user_id in self.user_db:
             return 'user exists'
 
@@ -124,7 +124,7 @@ class User(UserMixin):
         return self.db[self.id]
 
     @property
-    def today_game(self):
+    def today_game(self) -> dict:
         game = self.user_doc['games'].get(str(date.today()))
         user_doc = self.user_doc
         if game is None:
@@ -135,11 +135,11 @@ class User(UserMixin):
         return game
 
     @property
-    def found_words(self):
+    def found_words(self) -> list:
         return list(set(self.today_game['found_words']))
 
     @property
-    def yesterday_found(self):
+    def yesterday_found(self) -> list:
         found_words = self.user_doc['games'].get(str(date.today() - timedelta(days = 1)))
         if found_words is None:
             found_words = []
@@ -148,58 +148,62 @@ class User(UserMixin):
 
         return found_words
 
-    def find_word(self, word):
+    def find_word(self, word) -> None:
         user_doc = self.user_doc
         user_doc['games'][str(date.today())]['found_words'].append(word)
         self.db[self.id] = user_doc
+
+    def compare_word_list(self, other_user) -> list:
+        diff_words = set(self.found_words) - set(other_user.found_words)
+        return list(diff_words)
 
 # -----------------------------------------------------------
 # game mechanics
 # -----------------------------------------------------------
 class GameState:
-    def __init__(self):
+    def __init__(self) -> None:
         self.db = Database()
         self._letter_set = None
         self._required = None
         self._words = None
         self._last_updated = None
 
-    def update_game(self):
+    def update_game(self) -> None:
         self._words = self.db.today_game['word_list']
         self._required = self.db.today_game['queen_letter']
         self._letter_set = set(self.db.today_game['hive_letters'])
         self._last_updated = datetime.now()
 
     @property
-    def letter_set(self):
+    def letter_set(self) -> set:
         if self._letter_set is None or (datetime.now() - self._last_updated).total_seconds() > 3600:
             self.update_game()
 
         return self._letter_set
 
     @property
-    def required(self):
+    def required(self) -> str:
         if self._required is None or (datetime.now() - self._last_updated).total_seconds() > 3600:
             self.update_game()
 
         return self._required
     
     @property
-    def words(self):
+    def words(self) -> list:
         if self._words is None or (datetime.now() - self._last_updated).total_seconds() > 3600:
             self.update_game()
 
         return self._words
 
     @property
-    def yesterday_words(self):
+    def yesterday_words(self) -> list:
         if self.db.yesterday_words:
             return self.db.yesterday_words
         else:
             return ['No words yesterday.']
 
     @property
-    def maximum_score(self):
+    def maximum_score(self) -> int:
         if 'max_score' in self.db.today_game:
             return self.db.today_game['max_score']
         
@@ -208,7 +212,7 @@ class GameState:
         return max_score
 
     @property
-    def thresholds(self):
+    def thresholds(self) -> dict:
         return {
             'Beginner': 0,
             'Good Start': round(0.02 * self.maximum_score),
@@ -305,8 +309,11 @@ def api():
 
         return json.dumps(to_return), 200, {'ContentType': 'application/json'}
 
-    if rj['action'] == 'check_word':
+    elif rj['action'] == 'check_word':
         return json.dumps(check_word(rj['word'])), 200, {'ContentType': 'application/json'}
+
+    elif rj['action'] == 'work_together':
+        pass
 
 @app.route('/login', methods = ['POST'])
 def login():
