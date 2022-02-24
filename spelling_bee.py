@@ -57,7 +57,7 @@ class Database:
         return self.word_db[today]
 
     @property
-    def yesterday_words(self) -> list | bool:
+    def yesterday_words(self):
         yesterday = str(date.today() - timedelta(days = 1))
         yesterday_game = self.word_db.get(yesterday)
         if yesterday_game is not None:
