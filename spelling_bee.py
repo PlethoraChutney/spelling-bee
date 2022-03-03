@@ -39,7 +39,17 @@ class Database:
         with open(os.path.join('data', 'pangram_sets.txt'), 'r') as f:
             pangram_sets = [set(x.strip()) for x in f]
         pangram_set = random.choice(pangram_sets)
-        required_letter = random.choice(tuple(pangram_set))
+
+        if pangram_set.intersection({'i', 'n', 'g'}) == {'i', 'n', 'g'}:
+            required_from = pangram_set - {'i', 'n', 'g'}
+        elif pangram_set.intersection({'e', 'd'}) == {'e', 'd'}:
+            required_from = pangram_set - {'e', 'd'}
+        elif pangram_set.intersection({'e', 'r'}) == {'e', 'r'}:
+            required_from = pangram_set - {'e', 'r'}
+        else:
+            required_from = pangram_set
+
+        required_letter = random.choice(tuple(required_from))
 
         with open(os.path.join('data', 'words.txt'), 'r') as f:
             all_words = [x.strip() for x in f]
@@ -61,7 +71,9 @@ class Database:
         yesterday = str(date.today() - timedelta(days = 1))
         yesterday_game = self.word_db.get(yesterday)
         if yesterday_game is not None:
-            return yesterday_game.get('word_list')
+            word_list = yesterday_game.get('word_list')
+            # cannot believe that the ubuntu dictionary has slurs in it
+            return [x for x in word_list if 'nigga' not in x]
         else:
             return False
 
