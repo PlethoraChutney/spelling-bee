@@ -73,7 +73,7 @@ class Database:
         if yesterday_game is not None:
             word_list = yesterday_game.get('word_list')
             # cannot believe that the ubuntu dictionary has slurs in it
-            return [x for x in word_list if 'nigga' not in x]
+            return [x for x in word_list if 'gook' not in x]
         else:
             return False
 
