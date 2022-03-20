@@ -59,6 +59,7 @@
       :coopWords="coopWords"
       :coopUserSuccess='coopUserSuccess'
       :hasCooperated="hasCooperated"
+      :friendList="friendList"
       @getCoopWords="workTogether($event)"
     />
   </ModalWindow>
@@ -122,6 +123,7 @@ export default {
       'loginMessage': 'Please log in or create an account:',
       'userLoggedIn': false,
       'userId': '',
+      'friendList': [],
       'showWordModal': false,
       'letters': ['','','','','',''],
       'thresholds': ['Beginner', 'Starting'],
@@ -161,6 +163,7 @@ export default {
               if (this.loginMessage === 'Please log in or create an account:') {
                 this.loginMessage = `Welcome back, ${this.userId}\n`;
               }
+              this.friendList = data.friend_list;
               this.letters = data.letters;
               this.thresholds = data.thresholds;
               this.scoreLevels = data.score_levels;
@@ -303,6 +306,9 @@ export default {
           this.coopUserSuccess = data.success;
           if (data.success) {
             this.coopWords = data.words;
+            if (!this.friendList.includes(coopUserId)) {
+              this.friendList.push(coopUserId);
+            }
           }
         }))
     }

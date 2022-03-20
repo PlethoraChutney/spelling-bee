@@ -15,6 +15,16 @@
             @click="$emit('getCoopWords', coopUser)"
             >Get words</div>
         </div>
+        <div class="h-flex">
+            <p>Friends:</p>
+            <div class="button"
+            v-for="(friend, index) in friendList"
+            :key="index"
+            @click="this.coopUser = friend; $emit('getCoopWords', friend)"
+            >
+            {{friend}}
+            </div>
+        </div>
         <div
         v-if="!coopUserSuccess">
             <p>
@@ -42,7 +52,8 @@ export default {
     props: {
         'coopWords': Array,
         'coopUserSuccess': Boolean,
-        'hasCooperated': Boolean
+        'hasCooperated': Boolean,
+        'friendList': Array
     },
     emits: ['getCoopWords'],
     data() {

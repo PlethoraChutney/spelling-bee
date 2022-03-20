@@ -159,6 +159,22 @@ class User(UserMixin):
 
         return found_words
 
+    @property
+    def friends(self) -> list:
+        friend_list = self.user_doc.get('friends')
+        if friend_list is not None:
+            return friend_list
+        else:
+            return []
+
+    def add_friend(self, friend: str) -> None:
+        user_doc = self.user_doc
+        if 'friends' not in user_doc:
+            user_doc['friends'] = []
+        if friend not in user_doc['friends']:
+            user_doc['friends'].append(friend)
+            self.db[self.id] = user_doc
+
     def find_word(self, word) -> None:
         user_doc = self.user_doc
         user_doc['games'][str(date.today())]['found_words'].append(word)
@@ -257,6 +273,7 @@ class GameState:
         if coop_user is None:
             return_dict['success'] = False
         else:
+            user.add_friend(coop_user_id)
             return_dict['words'] = list(user.compare_word_list(coop_user))
 
         return return_dict
@@ -311,6 +328,7 @@ def api():
             to_return = {
                 'auth': True,
                 'user_id': current_user.id,
+                'friend_list': current_user.friends,
                 'required': game_state.required,
                 'letters': list(game_state.letter_set),
                 'thresholds': list(game_state.thresholds.keys()),
