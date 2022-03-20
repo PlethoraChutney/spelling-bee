@@ -23,6 +23,44 @@ export default {
 
             return currentThreshold;
         },
+        currentScoreEmoji() {
+            let emoji = '👶'
+            switch (this.currentScoreLevel) {
+                case 'Beginner':
+                    emoji = '👶'
+                    break;
+                case 'Good Start':
+                    emoji = '✏️'
+                    break;
+                case 'Moving Up':
+                    emoji = '↗️'
+                    break;
+                case 'Good':
+                    emoji = '👍'
+                    break;
+                case 'Solid':
+                    emoji = '⛰️'
+                    break;
+                case 'Nice':
+                    emoji = '😎'
+                    break;
+                case 'Great':
+                    emoji = '👏'
+                    break;
+                case 'Amazing':
+                    emoji = '😮'
+                    break;
+                case 'Genius':
+                    emoji = '🧠'
+                    break;
+                case 'Queen Bee':
+                    emoji = '👑🐝'
+                    break;
+                default:
+                    break;
+            }
+            return emoji;
+        },
         scoreSvgPaths() {
             let currentPercentScore = this.score/this.scoreLevels[this.scoreLevels.length - 1] * 350 + 15;
             return [
@@ -45,10 +83,9 @@ export default {
             return {'nonCurrent': nonCurrentScoreLevels, 'current': currentScoreLevel};
         },
         emojiString() {
-            let currentEmojiString = [`${this.score} · ${this.currentScoreLevel}: `];
-            if (this.scoreLevels.every(e => e <= this.score)) {
-                currentEmojiString.push('👑🐝')
-            } else {
+            let currentEmojiString = [`${this.score} · ${this.currentScoreLevel} ${this.currentScoreEmoji}`];
+            if (this.currentScoreLevel !== 'Queen Bee') {
+                currentEmojiString.push(':\n');
                 this.scoreLevels.forEach(scoreLevel => {
                     if (scoreLevel <= this.score) {
                         currentEmojiString.push('🟡');
