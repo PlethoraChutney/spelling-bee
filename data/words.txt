@@ -18,6 +18,7 @@ abbreviate
 abbreviated
 abbreviating
 abbreviation
+abbe
 abdicate
 abdicated
 abdicating
@@ -1211,6 +1212,9 @@ applicant
 application
 applicator
 applied
+applique
+appliqued
+appliqueing
 apply
 applying
 appoint
@@ -1450,6 +1454,7 @@ attach
 attached
 attaching
 attachment
+attache
 attack
 attacked
 attacker
@@ -3002,6 +3007,7 @@ bouquet
 bourbon
 bout
 boutique
+boutonniere
 bovine
 bowdlerize
 bowdlerized
@@ -3595,6 +3601,7 @@ cafeteria
 caffeinated
 caffeine
 caftan
+cafe
 cage
 caged
 cagey
@@ -3715,6 +3722,7 @@ campier
 camping
 campy
 canal
+canape
 canard
 canary
 cancan
@@ -4580,6 +4588,9 @@ chute
 chutney
 chutzpa
 chutzpah
+chateau
+chateaux
+chatelaine
 ciabatta
 cicada
 cicadae
@@ -4767,11 +4778,14 @@ cleverly
 clew
 clewed
 clewing
+cliche
+cliched
 click
 clickable
 clicked
 clicking
 client
+clientele
 cliff
 cliffhanger
 climactic
@@ -5535,6 +5549,7 @@ confrontation
 confrontational
 confronted
 confronting
+confrere
 confute
 confuted
 confuting
@@ -5945,6 +5960,7 @@ corruption
 corruptly
 cortex
 cortical
+cortege
 cote
 coterie
 cotillion
@@ -6321,6 +6337,7 @@ crown
 crowned
 crowning
 crozier
+crouton
 crucial
 crucially
 crucible
@@ -6376,6 +6393,7 @@ cryptically
 cryptogram
 cryptographer
 cryptography
+creche
 cubbyhole
 cube
 cubed
@@ -7353,6 +7371,7 @@ derogation
 derogatory
 derrick
 derringer
+derriere
 detach
 detachable
 detached
@@ -7718,6 +7737,7 @@ divinity
 divorce
 divorced
 divorcing
+divorcee
 divot
 divulge
 divulged
@@ -8244,6 +8264,10 @@ dynamite
 dynamited
 dynamiting
 dynamo
+debutante
+decollete
+derailleur
+detente
 each
 eager
 eagerer
@@ -8935,6 +8959,7 @@ entrepreneurial
 entropy
 entry
 entryway
+entree
 entwine
 entwined
 entwining
@@ -9891,6 +9916,8 @@ feuding
 fever
 fevered
 fewer
+fiance
+fiancee
 fiat
 fibbed
 fibber
@@ -10134,6 +10161,8 @@ flambeing
 flamboyance
 flamboyant
 flamboyantly
+flambe
+flambeed
 flame
 flamed
 flamenco
@@ -10723,6 +10752,7 @@ franking
 frankly
 frantic
 frantically
+frappe
 frat
 fraternal
 fraternally
@@ -11026,6 +11056,7 @@ fuzzier
 fuzzily
 fuzzing
 fuzzy
+fete
 gabardine
 gabbed
 gabbier
@@ -12109,6 +12140,7 @@ habituate
 habituated
 habituating
 habituation
+habitue
 hacienda
 hack
 hacked
@@ -14017,6 +14049,7 @@ ingratiatingly
 ingratitude
 ingredient
 ingrown
+ingenue
 inhabit
 inhabitable
 inhabitant
@@ -14592,6 +14625,7 @@ jailed
 jailer
 jailing
 jailor
+jalapeno
 jalopy
 jamb
 jamboree
@@ -14608,6 +14642,7 @@ japanning
 jape
 japed
 japing
+jardiniere
 jargon
 jarred
 jarring
@@ -14970,6 +15005,7 @@ kinda
 kinder
 kindergarten
 kindergartener
+kindergartner
 kindhearted
 kindle
 kindled
@@ -15087,6 +15123,8 @@ krone
 kroner
 kronor
 krypton
+krona
+kronur
 kudzu
 kumquat
 label
@@ -16122,6 +16160,7 @@ macho
 macing
 mackerel
 mackinaw
+macrame
 macro
 macrobiotic
 macron
@@ -16351,6 +16390,7 @@ manning
 manor
 manorial
 manpower
+manque
 mantel
 mantelpiece
 mantilla
@@ -16372,6 +16412,7 @@ manure
 manured
 manuring
 many
+manege
 maple
 mapped
 mapper
@@ -16487,6 +16528,7 @@ mathematical
 mathematically
 mathematician
 mating
+matinee
 matriarch
 matriarchal
 matriarchy
@@ -16519,6 +16561,7 @@ matzo
 matzoh
 matzot
 matzoth
+materiel
 maudlin
 maul
 mauled
@@ -17525,6 +17568,8 @@ mythic
 mythical
 mythological
 mythology
+metier
+melee
 nabbed
 nabbing
 nabob
@@ -17541,6 +17586,7 @@ naive
 naively
 naiver
 naivety
+naivete
 naked
 nakedly
 name
@@ -18513,6 +18559,7 @@ outrigger
 outright
 outrun
 outrunning
+outre
 outtake
 outvote
 outvoted
@@ -20999,6 +21046,7 @@ protruded
 protruding
 protuberance
 protuberant
+protege
 proud
 prouder
 proudly
@@ -21843,6 +21891,7 @@ recharging
 recheck
 rechecked
 rechecking
+recherche
 recipe
 recipient
 reciprocal
@@ -23167,6 +23216,7 @@ routing
 routinize
 routinized
 routinizing
+roue
 rove
 roved
 rover
@@ -24298,6 +24348,7 @@ touchier
 touching
 touchingly
 touchy
+touche
 tough
 toughen
 toughened
@@ -26047,6 +26098,7 @@ victualed
 victualing
 victualled
 victualling
+vicuna
 video
 videotape
 videotaped
@@ -27300,3 +27352,9 @@ zooming
 zucchini
 zwieback
 zygote
+eclair
+eclat
+elan
+emigre
+epee
+etude

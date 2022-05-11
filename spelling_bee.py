@@ -40,14 +40,13 @@ class Database:
             pangram_sets = [set(x.strip()) for x in f]
         pangram_set = random.choice(pangram_sets)
 
+        required_from = pangram_set
         if pangram_set.intersection({'i', 'n', 'g'}) == {'i', 'n', 'g'}:
-            required_from = pangram_set - {'i', 'n', 'g'}
+            required_from = required_from - {'i', 'n', 'g'}
         elif pangram_set.intersection({'e', 'd'}) == {'e', 'd'}:
-            required_from = pangram_set - {'e', 'd'}
+            required_from = required_from - {'e', 'd'}
         elif pangram_set.intersection({'e', 'r'}) == {'e', 'r'}:
-            required_from = pangram_set - {'e', 'r'}
-        else:
-            required_from = pangram_set
+            required_from = required_from - {'e', 'r'}
 
         required_letter = random.choice(tuple(required_from))
 
