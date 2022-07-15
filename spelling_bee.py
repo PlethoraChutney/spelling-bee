@@ -36,23 +36,15 @@ class Database:
         if today_record is not None:
             return today_record
         
-        with open(os.path.join('data', 'pangram_sets.txt'), 'r') as f:
-            pangram_sets = [set(x.strip()) for x in f]
-        pangram_set = random.choice(pangram_sets)
-
-        required_from = pangram_set
-        if pangram_set.intersection({'i', 'n', 'g'}) == {'i', 'n', 'g'}:
-            required_from = required_from - {'i', 'n', 'g'}
-        elif pangram_set.intersection({'e', 'd'}) == {'e', 'd'}:
-            required_from = required_from - {'e', 'd'}
-        elif pangram_set.intersection({'e', 'r'}) == {'e', 'r'}:
-            required_from = required_from - {'e', 'r'}
-
-        required_letter = random.choice(tuple(required_from))
+        with open(os.path.join('data', 'new_pangram_sets.txt'), 'r') as f:
+            game_sets = [x.strip() for x in f]
+        game_set = random.choice(game_sets)
+        pangram_set, required_letter = game_set.split(',')
+        pangram_set = set(pangram_set)
 
         with open(os.path.join('data', 'words.txt'), 'r') as f:
             all_words = [x.strip() for x in f]
-        word_list = tuple([x for x in all_words if pangram_set.union(set(x)) == pangram_set and required_letter in x])
+        word_list = [x for x in all_words if pangram_set.union(set(x)) == pangram_set and required_letter in x]
 
         pangram_set.remove(required_letter)
 
