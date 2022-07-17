@@ -61,6 +61,7 @@
       :hasCooperated="hasCooperated"
       :friendList="friendList"
       @getCoopWords="workTogether($event)"
+      @removeFriend="removeFriend($event)"
     />
   </ModalWindow>
 </template>
@@ -311,6 +312,16 @@ export default {
             }
           }
         }))
+    },
+    removeFriend(friend) {
+      let friendIndex = this.friendList.indexOf(friend);
+      if (friendIndex > -1) {
+        this.friendList.splice(friendIndex, 1);
+      }
+      sendRequest({
+        'action': 'remove_friend',
+        'friend_id': friend
+      });
     }
   }
 }

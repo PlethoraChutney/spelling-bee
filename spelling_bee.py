@@ -154,7 +154,7 @@ class User(UserMixin):
     def friends(self) -> list:
         friend_list = self.user_doc.get('friends')
         if friend_list is not None:
-            return friend_list
+            return list(set(friend_list))
         else:
             return []
 
@@ -162,9 +162,17 @@ class User(UserMixin):
         user_doc = self.user_doc
         if 'friends' not in user_doc:
             user_doc['friends'] = []
-        if friend not in user_doc['friends']:
+        if friend not in user_doc['friends'] and friend != self.id:
             user_doc['friends'].append(friend)
             self.db[self.id] = user_doc
+
+    def remove_friend(self, friend: str) -> None:
+        user_doc = self.user_doc
+        if 'friends' not in user_doc or not friend in user_doc['friends']:
+            return
+        user_doc['friends'].remove(friend)
+        self.db[self.id] = user_doc
+        
 
     def find_word(self, word) -> None:
         user_doc = self.user_doc
@@ -343,6 +351,10 @@ def api():
 
     elif rj['action'] == 'work_together':
         return json.dumps(game_state.work_together(current_user, rj['coop_user'])), 200, {'ContentType': 'application/json'}
+    
+    elif rj['action'] == 'remove_friend':
+        current_user.remove_friend(rj['friend_id'])
+        return 'OK', 200
 
 @app.route('/login', methods = ['POST'])
 def login():

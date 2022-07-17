@@ -15,7 +15,7 @@
             @click="$emit('getCoopWords', coopUser)"
             >Get words</div>
         </div>
-        <div class="h-flex">
+        <div class="h-flex" id="friends-container">
             <p>Friends:</p>
             <div class="button"
             style="padding: 10px;"
@@ -23,6 +23,7 @@
             :key="index"
             :class="{'current-friend': friend === this.coopUser}"
             @click="this.coopUser = friend; $emit('getCoopWords', friend)"
+            @contextmenu.prevent="$emit('removeFriend', friend)"
             >
             {{friend}}
             </div>
@@ -57,7 +58,7 @@ export default {
         'hasCooperated': Boolean,
         'friendList': Array
     },
-    emits: ['getCoopWords'],
+    emits: ['getCoopWords', 'removeFriend'],
     data() {
         return {
             'coopUser': ''
@@ -85,6 +86,10 @@ div.h-flex {
     flex-direction: row;
     justify-content: center;
     align-items: center;
+}
+
+div#friends-container {
+    flex-wrap: wrap;
 }
 
 div.modal-container {
