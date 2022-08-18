@@ -60,6 +60,26 @@ export default {
             <p v-else>Log in</p>
         </div>
 
+        <div
+        class="button"
+        v-if="existingUser"
+        @click="$emit('requestReset', {
+            'userId': enteredUserId
+        })"
+        >
+            <p>Request new secret word</p>
+        </div>
+
+        <div
+        class="button"
+        v-if="existingUser"
+        @click="$emit('performReset', {
+            'userId': enteredUserId
+        })"
+        >
+            <p>Perform reset</p>
+        </div>
+
     </div>
     <div class="message-container" v-else>
         <img src="../assets/spelling-bee.svg" alt="">

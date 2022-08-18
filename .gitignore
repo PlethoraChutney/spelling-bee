@@ -5,6 +5,7 @@ node_modules
 game_state.json
 __pycache__/
 data/*.png
+reset_requests.json
 
 
 # local env files

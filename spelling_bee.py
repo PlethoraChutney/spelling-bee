@@ -109,6 +109,50 @@ class Database:
         }
 
         return secret_word
+
+    def request_reset(self, user_id) -> None:
+        if user_id not in self.user_db:
+            return
+
+        try:
+            with open('reset_requests.json', 'r') as f:
+                resets = json.load(f)
+        except FileNotFoundError:
+            resets = {}
+
+        resets[user_id] = sha256(str(random.random()).encode('utf-8')).hexdigest()
+
+        with open('reset_requests.json', 'w') as f:
+            json.dump(resets, f)
+
+    def perform_reset(self, user_id, reset_code):
+        if user_id not in self.user_db:
+            return False
+
+        try:
+            with open('reset_requests.json', 'r') as f:
+                resets = json.load(f)
+
+            if user_id not in resets:
+                return False
+        except FileNotFoundError:
+            return False
+
+        if resets[user_id] == reset_code:
+            user_doc = self.user_db[user_id]
+
+            with open(os.path.join('data', 'words.txt'), 'r') as f:
+                all_words = [x.strip() for x in f]
+
+            secret_word = random.choice(all_words)
+            secret_hash = sha256(secret_word.encode('utf-8')).hexdigest()
+
+            user_doc['secret_word'] = secret_hash
+            self.user_db[user_id] = user_doc
+
+            del resets[user_id]
+
+            return secret_word
         
 # -----------------------------------------------------------
 # users
@@ -382,3 +426,16 @@ def login():
             login_user(game_state.db.get_user(rj['user_id']), remember = True)
 
         return json.dumps(to_return), 200, {'ContentType': 'application/json'}
+
+    elif rj['action'] == 'request_reset':
+        game_state.db.request_reset(rj['user_id'])
+
+        return json.dumps('OK'), 200, {'ContentType': 'application/json'}
+
+    elif rj['action'] == 'perform_reset':
+        new_word = game_state.db.perform_reset(rj['user_id'], rj['reset_code'])
+
+        if new_word:
+            return json.dumps({'success': True, 'new_word': new_word}), 200, {'ContentType': 'application/json'}
+        else:
+            return json.dumps({'success': False})

@@ -49,6 +49,8 @@
     :userLoggedIn="userLoggedIn"
     :loginMessage="loginMessage"
     @login="loginUser($event)"
+    @requestReset="requestReset($event)"
+    @performReset="performReset($event)"
     />
   </ModalWindow>
   <ModalWindow
@@ -206,6 +208,37 @@ export default {
           }
         })
       );
+    },
+    requestReset(resetInfo) {
+      let requestBody = {
+        'action': 'request_reset',
+        'user_id': resetInfo.userId
+      }
+      sendRequest(requestBody, '/login')
+      .then(response => {
+        if (response.status === 200) {
+          this.loginMessage = 'Get your reset code from Rich';
+        } else {
+          this.loginMessage = 'Server did not understand reset request. Is your user id right?';
+        }
+      })
+    },
+    performReset(resetInfo) {
+      let resetCode = prompt('Reset code:');
+      let requestBody = {
+        'action': 'perform_reset',
+        'user_id': resetInfo.userId,
+        'reset_code': resetCode
+      };
+      sendRequest(requestBody, '/login')
+      .then(request => request.json()
+      .then(data => {
+        if (data.success) {
+          alert(`Your new secret word is ${data.new_word}`);
+        } else {
+          this.loginMessage = 'Reset failed. Are you sure your code and username are right?';
+        }
+      }))
     },
     toggleLoadModal() {
       if (this.userLoggedIn) {
