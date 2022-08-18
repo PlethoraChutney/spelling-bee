@@ -152,6 +152,9 @@ class Database:
 
             del resets[user_id]
 
+            with open('reset_requests.json', 'w') as f:
+                json.dump(resets, f)
+
             return secret_word
         
 # -----------------------------------------------------------

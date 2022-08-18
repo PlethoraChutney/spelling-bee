@@ -77,7 +77,7 @@ export default {
             'userId': enteredUserId
         })"
         >
-            <p>Perform reset</p>
+            <p>Reset secret word with code</p>
         </div>
 
     </div>
